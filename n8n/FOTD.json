@@ -1,0 +1,246 @@
+{
+  "name": "FOTD",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -160
+      ],
+      "id": "62e9fa02-e6fe-45fb-bc1b-0acdd9c7c934",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n    \"urgent_important\": [\n        {\n            \"task\": \"提交报告\"\n        }\n    ],\n    \"not_urgent_important\": [\n        {\n            \"task\": \"学习新技能\"\n        }\n    ],\n    \"urgent_not_important\": [\n        {\n            \"task\": \"回复客户邮件\"\n        }\n    ],\n    \"not_urgent_not_important\": [\n        {\n            \"task\": \"整理桌面\"\n        }\n    ]\n}\n",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1104,
+        160
+      ],
+      "id": "9e1a3014-38b0-4208-80d9-a8fc6b54a56f",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n    { \"task\": \"提交报告\" },\n    { \"task\": \"回复客户邮件\" },\n    { \"task\": \"学习新技能\" },\n    { \"task\": \"整理桌面\" }\n]",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        160
+      ],
+      "id": "debce723-bb79-4957-af2b-8be9cd4c9046",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "023313d2-929b-4a51-b5fe-293f5597b301",
+              "name": "user_input",
+              "value": "完了完了，感觉要挂科了！后天要考微观经济学，笔记还没整理完。明天是小组展示的截止日期，PPT才做了一半。学生会办的讲座今晚就要开始了，场地布置还没弄。导师催的论文开题报告这周必须交。  生活上也是一团麻，宿舍脏得没法看了，该洗的衣服堆成了山。爸妈打电话一直没回，好朋友生日也快忘了。还想刷一下实习招聘信息，但根本没时间。快帮我看看，我该怎么安排这有限的24小时，哪些是生死线，哪些可以稍微放放？",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        -160
+      ],
+      "id": "e79c5a68-7ea3-4378-8038-68d3117d85c8",
+      "name": "User Input Example"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n    \"role\": \"任务分类助手\",\n    \"profile\": {\n        \"author\": \"ChatGPT\",\n        \"version\": \"1.0\",\n        \"language\": \"中文\",\n        \"description\": \"任务分类助手能够根据任务内容自动判断任务的紧急性和重要性，并根据判断结果将任务分类到四个象限。输出为结构化的 JSON 格式，帮助用户高效地管理任务。\"\n    },\n    \"skills\": [\n        {\n            \"name\": \"任务分类与推理\",\n            \"description\": \"根据用户输入的任务列表，通过任务内容推理出任务的紧急性 (urgent) 和重要性 (important)，然后按照以下标准进行分类：\\n\\n- 紧急且重要：任务需要立即完成且对目标或长期发展至关重要。\\n- 不紧急但重要：任务对目标或长期发展重要，但可以延后完成。\\n- 紧急但不重要：任务需要立即完成，但对目标的长期影响较小。\\n- 不紧急不重要：任务既不紧急也不重要，影响较小或可忽略。\",\n            \"expected_output\": \"根据任务内容自动判断每个任务的紧急性和重要性，并按四象限分类。输出分类后的结果，以结构化的 JSON 格式返回。\"\n        }\n    ],\n    \"rules\": [\n        \"任务判断标准：对每个任务进行推理时，必须根据任务的内容、所需完成的时间和任务的长期价值来确定任务的‘紧急性’和‘重要性’。\",\n        \"保持一致性：输出必须符合四象限分类标准，每个任务必须有明确的分类。\",\n        \"避免错误判断：不得凭空推测任务的特性，所有分类必须基于合理的推理。\"\n    ],\n    \"workflow\": [\n        \"分析用户输入并识别任务内容：接收用户输入的任务列表，任务仅包含任务描述。\",\n        \"根据任务内容推理紧急性和重要性：通过任务描述，判断每个任务是否紧急且重要。\",\n        \"应用分类规则：根据推理出的紧急性和重要性，将任务划分到四个象限。\",\n        \"返回结构化输出：将分类结果返回为 JSON 格式，结构化展示四个象限的任务。\"\n    ],\n    \"example\": {\n        \"input\": [\n            { \"task\": \"提交报告\" },\n            { \"task\": \"回复客户邮件\" },\n            { \"task\": \"学习新技能\" },\n            { \"task\": \"整理桌面\" }\n        ],\n        \"output\": {\n            \"urgent_important\": [{ \"task\": \"提交报告\" }],\n            \"not_urgent_important\": [{ \"task\": \"学习新技能\" }],\n            \"urgent_not_important\": [{ \"task\": \"回复客户邮件\" }],\n            \"not_urgent_not_important\": [{ \"task\": \"整理桌面\" }]\n        }\n    },\n    \"input_data\": [\n        {\n            \"tasks\": {{ $json.toJsonString() }}\n        }\n    ]\n}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -64
+      ],
+      "id": "28da3c61-e54b-43f0-97ef-e9926ba5aede",
+      "name": "Task Classifier"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={\n  \"role\": \"高效任务处理助手\",\n  \"profile\": {\n    \"author\": \"AI Assistant\",\n    \"version\": \"1.0\",\n    \"language\": \"中文\",\n    \"description\": \"专注于从自然语言中提取和标准化任务项，并输出结构化JSON数据\"\n  },\n  \"goal\": {\n    \"outcome\": \"将用户杂乱的任务描述转换为标准化的JSON任务列表\",\n    \"done_criteria\": [\n      \"完整提取用户提到的所有任务项\",\n      \"每个任务项都规范为简练的动词短语\",\n      \"输出格式正确的JSON数组\"\n    ],\n    \"non_goals\": [\n      \"不进行任务优先级排序\",\n      \"不对任务进行分类\",\n      \"不提供额外建议和分析\"\n    ]\n  },\n  \"skills\": {\n    \"任务识别\": [\n      \"从自然语言中精准识别独立任务项\",\n      \"处理口语化、碎片化的任务描述\"\n    ],\n    \"文本标准化\": [\n      \"将任务描述统一为'动词+宾语'的简洁格式\",\n      \"保持任务原意不变\"\n    ],\n    \"数据格式化\": [\n      \"构建标准的JSON数组结构\",\n      \"确保输出符合JSON语法规范\"\n    ]\n  },\n  \"rules\": [\n    \"只输出JSON格式结果，不添加任何额外文字\",\n    \"必须包含用户提到的所有任务项\",\n    \"不修改任务的原意和范围\",\n    \"不自行添加或删除任务\"\n  ],\n  \"workflow\": [\n    \"分析用户输入，识别所有任务提及\",\n    \"将每个任务标准化为简洁的动词短语\",\n    \"构建包含'task'键值对的JSON对象数组\",\n    \"验证JSON格式正确性和任务完整性\",\n    \"输出最终JSON结果\"\n  ],\n  \"examples\": {\n    \"input\": \"我要完成预算报告，还要参加例会，记得健身\",\n    \"output\": [\n      {\"task\": \"完成预算报告\"},\n      {\"task\": \"参加例会\"},\n      {\"task\": \"健身\"}\n    ]\n  },\n  \"user_input\": \"{{ $json.voiceText }}\"\n}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        656,
+        -64
+      ],
+      "id": "48b54d61-586b-41e0-87c9-199f665b805a",
+      "name": "Task List Generator"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fotd",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        32
+      ],
+      "id": "09c412cd-9a24-4e24-87aa-4d223534d7ee",
+      "name": "Webhook",
+      "webhookId": "7da480cc-8add-4a56-aaa9-777f5e038e7d"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"sortedTasks\": {{ $json.output.toJsonString() }}\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1472,
+        -64
+      ],
+      "id": "8e77a024-6ddd-4588-a87a-9fd6ff8f0b72",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "var voiceText = ''\n\n// Webhook\nif ($input.first().json.body.text) voiceText = $input.first().json.body.text;\n// Debug\nif ($input.first().json.user_input) voiceText = $input.first().json.user_input;\n\nreturn [{\n  voiceText: voiceText\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -64
+      ],
+      "id": "7f22196c-0877-4277-a23c-46ef650202e5",
+      "name": "Get VoiceText"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "User Input Example",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Task Classifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Task List Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Input Example": {
+      "main": [
+        [
+          {
+            "node": "Get VoiceText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task List Generator": {
+      "main": [
+        [
+          {
+            "node": "Task Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get VoiceText",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Task Classifier": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get VoiceText": {
+      "main": [
+        [
+          {
+            "node": "Task List Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e89be80d-1710-49ad-9583-9a8459c3f545",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "084e753b804d55c28dd2e5c122624b9d991c084a40ef2a07010d8cb2dc7e3bc3"
+  },
+  "id": "ZwbkXTdqM9ia8QVP",
+  "tags": []
+}
