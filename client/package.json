@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@silver-zepp/easy-storage": "^2.0.3",
+    "@x1a0ma17x/zeppos-fx": "^2.0.3",
     "@zeppos/zml": "^0.0.41"
   }
 }

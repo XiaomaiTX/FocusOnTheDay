@@ -25,7 +25,10 @@
       "module": {
         "page": {
           "pages": [
-            "page/index"
+            "page/index",
+            "page/Home/index",
+            "page/Settings/index",
+            "page/AddTasks/index"
           ]
         },
         "app-side": {

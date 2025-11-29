@@ -11,6 +11,9 @@ importers:
       '@silver-zepp/easy-storage':
         specifier: ^2.0.3
         version: 2.0.3
+      '@x1a0ma17x/zeppos-fx':
+        specifier: ^2.0.3
+        version: 2.0.3
       '@zeppos/zml':
         specifier: ^0.0.41
         version: 0.0.41
@@ -24,6 +27,9 @@ packages:
   '@silver-zepp/easy-storage@2.0.3':
     resolution: {integrity: sha512-exGTAny68GnoikEPWy0uQZlOY3Oh8lFdbsR835gvO43LqQ5q+MqxZX2LILK9SgiCRF0bAgVv7//sVFnALGIlQg==}
 
+  '@x1a0ma17x/zeppos-fx@2.0.3':
+    resolution: {integrity: sha512-mhZhlWRZjNXyhNrKHHjtp4Z9rOIQhDd5SxDoPIqVwdy8tialvAAe4qjxCcB+tAMYkLgs6CUj9uDmq7ZQZnxwfQ==}
+
   '@zeppos/device-types@3.0.0':
     resolution: {integrity: sha512-vFd880TxkAaSO2QmLBFIzS0zUXnwRDXlM4FZTdpOgotKpshokOwSTtzIeysf3TIMFSh/wFdbGkkYrUyRxR9w8Q==}
 
@@ -33,6 +39,8 @@ packages:
 snapshots:
 
   '@silver-zepp/easy-storage@2.0.3': {}
+
+  '@x1a0ma17x/zeppos-fx@2.0.3': {}
 
   '@zeppos/device-types@3.0.0': {}
 
