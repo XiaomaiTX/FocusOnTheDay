@@ -2,9 +2,28 @@ import { BasePage } from "@zeppos/zml/base-page";
 
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
-import { ScrollListPage } from "@/components/ScrollListPage";
+import * as zosApp from "@zos/app";
+import { statSync } from "@zos/fs";
+
+import { SoundRecorder } from "@silver-zepp/easy-media/recorder";
+
+import { ScrollListPage } from "../../components/ScrollListPage";
+import { px } from "@zos/utils";
+
+const recorder = new SoundRecorder("mic-recording.opus");
 Page(
     BasePage({
+        state: {
+            voiceText: "",
+            recordConditions: {
+                IDLE: "idle",
+                RECORDING: "recording",
+            },
+            recordCondition: "idle",
+        },
+        onInit() {
+            console.log(getText("example"));
+        },
         build() {
             console.log(getText("example"));
             const voiceText = `完了完了，感觉要挂科了！
@@ -74,7 +93,65 @@ Page(
                     description: priorityMap[taskObj.priority] || "未知优先级",
                 });
             });
-            new ScrollListPage(scrollListPageTestData);
+            const recordButton = hmUI.createWidget(hmUI.widget.BUTTON, {
+                x: px((480 - 200) / 2),
+                y: px(400),
+                w: px(200),
+                h: px(60),
+                radius: px(12),
+                normal_color: 0xe5e5e5,
+                press_color: 0xcfcfcf,
+                color: 0x000000,
+                text: "Tap To Speak",
+                click_func: () => {
+                    console.log("button clicked");
+                    if (
+                        this.state.recordCondition ===
+                        this.state.recordConditions.IDLE
+                    ) {
+                        console.log("开始录音");
+                        this.state.recordCondition =
+                            this.state.recordConditions.RECORDING;
+                        recordButton.setProperty(hmUI.prop.MORE, {
+                            x: recordButton.getProperty(hmUI.prop.X),
+                            y: recordButton.getProperty(hmUI.prop.Y),
+                            w: recordButton.getProperty(hmUI.prop.W),
+                            h: recordButton.getProperty(hmUI.prop.H),
+
+                            text: "Stop",
+                        });
+                        recorder.start();
+                    } else if (
+                        this.state.recordCondition ===
+                        this.state.recordConditions.RECORDING
+                    ) {
+                        console.log("结束录音");
+                        this.state.recordCondition =
+                            this.state.recordConditions.IDLE;
+                        recordButton.setProperty(hmUI.prop.MORE, {
+                            x: recordButton.getProperty(hmUI.prop.X),
+                            y: recordButton.getProperty(hmUI.prop.Y),
+                            w: recordButton.getProperty(hmUI.prop.W),
+                            h: recordButton.getProperty(hmUI.prop.H),
+                            text: "Processing...",
+                        });
+                        recorder.stop();
+                        setTimeout(() => {
+                            const result = statSync({
+                            path: "mic-recording.opus",
+                        });
+                        console.log("[mic-recording.opus] result:", result);
+
+                        if (result) {
+                            const { size } = result;
+                            console.log("[mic-recording.opus] size:", size);
+                        }
+                        },5000)
+                        
+                    }
+                },
+            });
+            // new ScrollListPage(scrollListPageTestData);
         },
     })
 );

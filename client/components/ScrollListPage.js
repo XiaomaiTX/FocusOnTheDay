@@ -37,11 +37,13 @@ export class ScrollListPage {
 
         for (let i = 0; i < params.items.length; i++) {
             const itemData = params.items[i];
+
+            const itemStyles = this.mergeStyles(this.styles, itemData.customStyles || {});
             buttonsGroup
                 .createWidget(hmUI.widget.FILL_RECT, {
-                    ...this.styles.SETTINGS_BUTTON_STYLE,
+                    ...itemStyles.SETTINGS_BUTTON_STYLE,
                     y:
-                        this.styles.SETTINGS_BUTTON_STYLE.y +
+                        itemStyles.SETTINGS_BUTTON_STYLE.y +
                         this.state.buttonOffset,
                 })
                 .addEventListener(hmUI.event.CLICK_UP, () => {
@@ -51,9 +53,9 @@ export class ScrollListPage {
             if (itemData && itemData.description) {
                 buttonsGroup
                     .createWidget(hmUI.widget.TEXT, {
-                        ...this.styles.SETTINGS_BUTTON_SUBTITLE_STYLE,
+                        ...itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE,
                         y:
-                            this.styles.SETTINGS_BUTTON_SUBTITLE_STYLE.y +
+                            itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE.y +
                             this.state.buttonOffset,
                         text: itemData.title,
                     })
@@ -62,9 +64,9 @@ export class ScrollListPage {
                 if (itemData.value) {
                     buttonsGroup
                         .createWidget(hmUI.widget.TEXT, {
-                            ...this.styles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
+                            ...itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
                             y:
-                                this.styles.SETTINGS_BUTTON_DESCRIPTION_STYLE
+                                itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE
                                     .y + this.state.buttonOffset,
                             text: storage.getKey(itemData.value),
                         })
@@ -72,9 +74,9 @@ export class ScrollListPage {
                 } else {
                     buttonsGroup
                         .createWidget(hmUI.widget.TEXT, {
-                            ...this.styles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
+                            ...itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
                             y:
-                                this.styles.SETTINGS_BUTTON_DESCRIPTION_STYLE
+                                itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE
                                     .y + this.state.buttonOffset,
                             text: itemData.description,
                         })
@@ -83,9 +85,9 @@ export class ScrollListPage {
             } else if (itemData) {
                 buttonsGroup
                     .createWidget(hmUI.widget.TEXT, {
-                        ...this.styles.SETTINGS_BUTTON_TITLE_STYLE,
+                        ...itemStyles.SETTINGS_BUTTON_TITLE_STYLE,
                         y:
-                            this.styles.SETTINGS_BUTTON_TITLE_STYLE.y +
+                            itemStyles.SETTINGS_BUTTON_TITLE_STYLE.y +
                             this.state.buttonOffset,
                         text: itemData.title,
                     })
@@ -95,9 +97,9 @@ export class ScrollListPage {
             if (itemData && itemData.icon) {
                 buttonsGroup
                     .createWidget(hmUI.widget.IMG, {
-                        ...this.styles.SETTINGS_BUTTON_ICON_STYLE,
+                        ...itemStyles.SETTINGS_BUTTON_ICON_STYLE,
                         y:
-                            this.styles.SETTINGS_BUTTON_ICON_STYLE.y +
+                            itemStyles.SETTINGS_BUTTON_ICON_STYLE.y +
                             this.state.buttonOffset,
                         src: itemData.icon,
                     })
@@ -105,7 +107,7 @@ export class ScrollListPage {
             }
 
             this.state.buttonOffset +=
-                this.styles.SETTINGS_BUTTON_STYLE.h + px(10);
+                itemStyles.SETTINGS_BUTTON_STYLE.h + px(10);
         }
     }
 

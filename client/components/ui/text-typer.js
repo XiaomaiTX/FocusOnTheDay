@@ -66,84 +66,93 @@ export class TextTyper {
     setTextBuffer(/** @type {string} */ newText) {
         this.textBuffer = Array.isArray(newText) ? newText : [newText];
     }
-start(callback) {
-    if (this.condition === CONDITION.TYPING) {
-        console.log("already typing");
-        return;
-    }
-    console.log("start typing");
-    this.condition = CONDITION.TYPING;
-    this.displayedText = "";
-    this.currentTextIndex = 0;
-    
-    const typeNextText = () => {
-        if (this.currentTextIndex >= this.params.text.text.length) {
-            console.log("all texts typed");
-            this.condition = CONDITION.IDLE;
-            if (callback) callback();
+    start(callback) {
+        if (this.condition === CONDITION.TYPING) {
+            console.log("already typing");
             return;
         }
-        
-        this.textBuffer = this.params.text.text[this.currentTextIndex];
-        let charIndex = 0;
-        const totalChars = this.textBuffer.length;
-        console.log("typing text", this.currentTextIndex, "totalChars", totalChars);
-        
-        const typeNextChar = () => {
-            if (charIndex < totalChars) {
-                this.displayedText += this.textBuffer.charAt(charIndex);
+        console.log("start typing");
+        this.condition = CONDITION.TYPING;
+        this.displayedText = "";
+        this.currentTextIndex = 0;
+
+        const typeNextText = () => {
+            if (this.currentTextIndex >= this.params.text.text.length) {
+                console.log("all texts typed");
+                hmUI.deleteWidget(this.textWidget);
+                hmUI.deleteWidget(this.cursor);
+                hmUI.redraw();
+                this.condition = CONDITION.IDLE;
+                if (callback) callback();
+                return;
+            }
+
+            this.textBuffer = this.params.text.text[this.currentTextIndex];
+            let charIndex = 0;
+            const totalChars = this.textBuffer.length;
+            console.log(
+                "typing text",
+                this.currentTextIndex,
+                "totalChars",
+                totalChars
+            );
+
+            const typeNextChar = () => {
+                if (charIndex < totalChars) {
+                    this.displayedText += this.textBuffer.charAt(charIndex);
+                    this.textWidget.setProperty(hmUI.prop.MORE, {
+                        text: this.displayedText,
+                        w: hmUI.getTextLayout(this.displayedText, {
+                            text_size: this.params.text.text_size,
+                            text_width: 0,
+                        }).width,
+                    });
+                    charIndex++;
+                    this.moveCursorToEnd();
+                    setTimeout(typeNextChar, this.params.charInterval);
+                } else {
+                    this.condition = CONDITION.IDLE;
+                    setTimeout(() => {
+                        this.cleanupDisplay(() => {
+                            this.currentTextIndex++;
+                            setTimeout(typeNextText, 500);
+                        });
+                    }, 1000);
+                }
+            };
+
+            typeNextChar();
+        };
+
+        typeNextText();
+    }
+
+    cleanupDisplay(callback) {
+        if (this.condition === CONDITION.TYPING) {
+            console.log("cannot cleanup while typing");
+            return;
+        }
+        this.condition = CONDITION.TYPING;
+        let charIndex = this.displayedText.length;
+
+        const removeNextChar = () => {
+            if (charIndex > 0) {
+                this.displayedText = this.displayedText.slice(0, -1);
                 this.textWidget.setProperty(hmUI.prop.MORE, {
                     text: this.displayedText,
-                    w: hmUI.getTextLayout(this.displayedText, {
-                        text_size: this.params.text.text_size,
-                        text_width: 0,
-                    }).width,
                 });
-                charIndex++;
+                charIndex--;
                 this.moveCursorToEnd();
-                setTimeout(typeNextChar, this.params.charInterval);
+                setTimeout(removeNextChar, this.params.charInterval * 0.2);
             } else {
                 this.condition = CONDITION.IDLE;
-                setTimeout(() => {
-                    this.cleanupDisplay(() => {
-                        this.currentTextIndex++;
-                        setTimeout(typeNextText, 500);
-                    });
-                }, 1000);
+                if (callback) callback();
             }
         };
-        
-        typeNextChar();
-    };
-    
-    typeNextText();
-}
 
-cleanupDisplay(callback) {
-    if (this.condition === CONDITION.TYPING) {
-        console.log("cannot cleanup while typing");
-        return;
+        removeNextChar();
     }
-    this.condition = CONDITION.TYPING;
-    let charIndex = this.displayedText.length;
-    
-    const removeNextChar = () => {
-        if (charIndex > 0) {
-            this.displayedText = this.displayedText.slice(0, -1);
-            this.textWidget.setProperty(hmUI.prop.MORE, {
-                text: this.displayedText,
-            });
-            charIndex--;
-            this.moveCursorToEnd();
-            setTimeout(removeNextChar, this.params.charInterval * 0.2);
-        } else {
-            this.condition = CONDITION.IDLE;
-            if (callback) callback();
-        }
-    };
-    
-    removeNextChar();
-}    moveCursorToEnd() {
+    moveCursorToEnd() {
         const textLayout = hmUI.getTextLayout(this.displayedText, {
             text_size: this.params.text.text_size,
             text_width: 0,
@@ -157,6 +166,5 @@ cleanupDisplay(callback) {
             w: this.params.cursor.width,
             h: this.params.text.text_size,
         });
-
     }
 }
