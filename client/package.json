@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@zeppos/device-types": "^3.0.0"
+    "@zeppos/device-types": "^3.0.0",
+    "i18next-cli": "^1.28.0"
   },
   "dependencies": {
+    "@silver-zepp/easy-media": "^1.1.5",
     "@silver-zepp/easy-storage": "^2.0.3",
     "@x1a0ma17x/zeppos-fx": "^2.0.3",
     "@zeppos/zml": "^0.0.41"

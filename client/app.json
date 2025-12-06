@@ -12,7 +12,7 @@
     "vender": "zepp",
     "description": "empty application"
   },
-  "permissions": [],
+  "permissions": ["device:os.mic"],
   "runtime": {
     "apiVersion": {
       "compatible": "4.0",
