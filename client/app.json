@@ -26,11 +26,11 @@
         "page": {
           "pages": [
             "page/index",
-            "page/Home/index",
-            "page/Settings/index",
-            "page/AddTasks/index",
-            "page/EditTask/index",
-            "page/Guide/index"
+            "page/home/index",
+            "page/settings/index",
+            "page/add-tasks/index",
+            "page/edit-task/index",
+            "page/guide/index"
           ]
         },
         "app-side": {

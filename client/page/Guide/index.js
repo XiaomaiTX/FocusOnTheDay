@@ -101,7 +101,7 @@ Page(
                                 (err, ok) => {
                                     if (ok) console.log("config saved!");
                                     hmRouter.push({
-                                        url: "page/Home/index",
+                                        url: "page/home/index",
                                     });
                                 }
                             );

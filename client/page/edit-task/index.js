@@ -1,6 +1,5 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
-import * as hmRouter from "@zos/router";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -71,22 +70,7 @@ Page(
                                 priorityMap[this.params.task?.priority] || "无",
                             value: "taskPriority",
                             action: () => {
-                                hmUI.createKeyboard({
-                                    inputType: hmUI.inputType.JSKB,
-                                    onComplete: (_, result) => {
-                                        console.log("完成输入:", result.data);
-                                        ScrollListPage.setValue(
-                                            "taskName",
-                                            result.data
-                                        );
-                                        hmUI.deleteKeyboard();
-                                    },
-                                    onCancel: (_, result) => {
-                                        console.log("取消输入");
-                                        hmUI.deleteKeyboard();
-                                    },
-                                    text: this.params.task?.name,
-                                });
+                            
                             },
 
                             customStyles: {

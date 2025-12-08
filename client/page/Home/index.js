@@ -40,7 +40,7 @@ Page(
                             title: "新建任务",
                             action: () => {
                                 hmRouter.push({
-                                    url: "page/AddTasks/index",
+                                    url: "page/add-tasks/index",
                                 });
                             }
                         });
@@ -60,7 +60,7 @@ Page(
                                     },
                                     action: () => {
                                         hmRouter.push({
-                                            url: "page/EditTask/index",
+                                            url: "page/edit-task/index",
                                             params: {
                                                 task: task,
                                             },
@@ -70,6 +70,15 @@ Page(
 
                             }
                         });
+                        scrollListPageTestData.items.push({
+                            title: "设置",
+                            icon: "gear-fill.png",
+                            action: () => {
+                                hmRouter.push({
+                                    url: "page/settings/index",
+                                });
+                            }
+                        })
                         new ScrollListPage(scrollListPageTestData);
                     }, 700);
                 }

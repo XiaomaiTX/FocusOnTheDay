@@ -105,6 +105,10 @@ Page(
             // Debug
         },
         build() {
+            // DEBUG
+            hmRouter.push({
+                url: "page/settings/index",
+            });
             const button = hmUI.createWidget(hmUI.widget.BUTTON, {
                 x: px(60),
                 y: px(400),
@@ -118,7 +122,7 @@ Page(
                 click_func: () => {
                     console.log("button clicked");
                     hmRouter.push({
-                        url: "page/Home/index",
+                        url: "page/home/index",
                     });
                 },
             });
@@ -174,34 +178,31 @@ Page(
                                     });
                                 }
                             );
-                        }else {
+                        } else {
                             this.textWidget = new TextTyper({
-                                        text: {
-                                            x: px(20),
-                                            y: px((480 - 36) / 2),
-                                            w: px(480),
-                                            h: px(480),
-                                            color: 0xffffff,
-                                            text_size: px(26),
-                                            text: [
-                                                `今天还有${config.tasks.length}个任务待完成哦~`,
-                                            ],
-                                        },
-                                        charInterval: 50,
-                                    });
-                                    this.textWidget.start(() => {
-                                        console.log("text typer finished");
-                                        button.setProperty(
-                                            hmUI.prop.VISIBLE,
-                                            true
-                                        );
-                                    });
+                                text: {
+                                    x: px(20),
+                                    y: px((480 - 36) / 2),
+                                    w: px(480),
+                                    h: px(480),
+                                    color: 0xffffff,
+                                    text_size: px(26),
+                                    text: [
+                                        `今天还有${config.tasks.length}个任务待完成哦~`,
+                                    ],
+                                },
+                                charInterval: 50,
+                            });
+                            this.textWidget.start(() => {
+                                console.log("text typer finished");
+                                button.setProperty(hmUI.prop.VISIBLE, true);
+                            });
                         }
                     }, 500);
                 } else {
                     console.log("config.json not found");
                     hmRouter.push({
-                        url: "page/Guide/index",
+                        url: "page/guide/index",
                     });
                 }
             });

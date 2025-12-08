@@ -20,7 +20,8 @@ Page(
                     setTimeout(() => {
                         arc.stop();
                         arc.destroy();
-                        const settingsPageData = {
+
+                        const scrollListPage = new ScrollListPage({
                             title: "Settings",
                             items: [
                                 {
@@ -30,20 +31,16 @@ Page(
                                         ? "On"
                                         : "Off",
                                     action() {
-                                        const dialog = createModal({
-                                            content: "hello world",
-                                            autoHide: false,
-                                            onClick: (keyObj) => {
-                                                const { type } = keyObj;
-                                                if (type === MODAL_CONFIRM) {
-                                                    console.log("confirm");
-                                                } else {
-                                                    dialog.show(false);
-                                                }
-                                            },
-                                        });
-
-                                        dialog.show(true);
+                                        console.log("Clicked Daily Notifications");
+                                        scrollListPage.updateItemTextByTitle(
+                                            "Daily Notifications",
+                                            {
+                                                description: config.settings
+                                                    .daily_notifications
+                                                    ? "Off"
+                                                    : "On",
+                                            }
+                                        )
                                     },
                                 },
                                 {
@@ -61,10 +58,20 @@ Page(
                                         config.settings
                                             .user_profile_description,
                                 },
+                                {
+                                    title: "Clear Data",
+                                    action() {
+                                        console.log("Clicked Clear Data");
+                                        AsyncStorage.RemoveFile("config.json", (err, ok) => {
+                                            if (!err) {
+                                                console.log("config.json removed");
+                                                hmRouter.exit();
+                                            }
+                                        });
+                                    },
+                                }
                             ],
-                        };
-
-                        new ScrollListPage(settingsPageData);
+                        });
                     }, 700);
                 }
             });
