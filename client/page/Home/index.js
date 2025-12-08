@@ -1,6 +1,6 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
-import * as zosRouter from "@zos/router";
+import * as hmRouter from "@zos/router";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -39,7 +39,7 @@ Page(
                         scrollListPageTestData.items.push({
                             title: "新建任务",
                             action: () => {
-                                zosRouter.push({
+                                hmRouter.push({
                                     url: "page/AddTasks/index",
                                 });
                             }
@@ -57,6 +57,14 @@ Page(
                                         SETTINGS_BUTTON_SUBTITLE_STYLE: {
                                             color: priorityColorMap[task.priority]
                                         }
+                                    },
+                                    action: () => {
+                                        hmRouter.push({
+                                            url: "page/EditTask/index",
+                                            params: {
+                                                task: task,
+                                            },
+                                        });
                                     }
                                 });
 

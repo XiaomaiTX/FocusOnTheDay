@@ -1,6 +1,6 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
-import * as zosInteraction from "@zos/interaction";
+import * as hmInteraction from "@zos/interaction";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";

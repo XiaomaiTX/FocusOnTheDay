@@ -110,6 +110,15 @@ export class ScrollListPage {
                 itemStyles.SETTINGS_BUTTON_STYLE.h + px(10);
         }
     }
+    static setValue(key, value) {
+        storage.setKey(key, value);
+        console.log(storage.getKey(key));
+    }
+
+    static getValue(key) {
+        console.log(storage.getKey(key));
+        return storage.getKey(key);
+    }
 
     mergeStyles(defaultStyles, customStyles) {
         const merged = { ...defaultStyles };

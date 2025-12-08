@@ -2,7 +2,7 @@ import { BasePage } from "@zeppos/zml/base-page";
 
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
-import * as zosApp from "@zos/app";
+import * as hmApp from "@zos/app";
 import { statSync } from "@zos/fs";
 
 import { SoundRecorder } from "@silver-zepp/easy-media/recorder";

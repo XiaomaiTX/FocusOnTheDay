@@ -28,7 +28,9 @@
             "page/index",
             "page/Home/index",
             "page/Settings/index",
-            "page/AddTasks/index"
+            "page/AddTasks/index",
+            "page/EditTask/index",
+            "page/Guide/index"
           ]
         },
         "app-side": {

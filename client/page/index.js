@@ -3,7 +3,7 @@ import { BasePage } from "@zeppos/zml/base-page";
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import { px } from "@zos/utils";
-import * as zosRouter from "@zos/router";
+import * as hmRouter from "@zos/router";
 import { Time } from "@zos/sensor";
 
 import { ProgressArc } from "../components/ui/progress-arc";
@@ -84,6 +84,18 @@ class WelcomeMessageGenerator {
 }
 const welcomeGenerator = new WelcomeMessageGenerator();
 
+function isFirstOpenTodaySimple(currentTime, lastOpenTime) {
+    // 1. 边界情况处理
+    if (!lastOpenTime || lastOpenTime === 0) return true;
+
+    // 2. 日期转换和比较
+    const currentDate = new Date(currentTime).toDateString();
+    const lastOpenDate = new Date(lastOpenTime).toDateString();
+
+    // 3. 返回比较结果
+    return currentDate !== lastOpenDate;
+}
+
 Page(
     BasePage({
         onInit() {
@@ -91,58 +103,8 @@ Page(
             this.arc.start();
 
             // Debug
-            AsyncStorage.WriteJson(
-                "config.json",
-                {
-                    version: "1.0",
-                    tasks: [
-                        {
-                            name: "完成预算报告",
-                            today: true,
-                            done: false,
-                            priority: "urgent_important",
-                            notificationTime: "2024-06-01T10:00:00",
-                        },
-                        {
-                            name: "参加例会",
-                            today: true,
-                            done: false,
-                            priority: "urgent_not_important",
-                        },
-                        {
-                            name: "健身",
-                            today: true,
-                            done: false,
-                            priority: "not_urgent_important",
-                        },
-                        {
-                            name: "回复客户邮件",
-                            today: false,
-                            done: false,
-                            priority: "urgent_not_important",
-                        },
-                        {
-                            name: "整理桌面",
-                            today: false,
-                            done: true,
-                            priority: "not_urgent_not_important",
-                        },
-                    ],
-                    settings: {
-                        daily_notifications: true,
-                        notification_time: "09:00",
-                        backend_url: "https://api.example.com",
-                        user_profile_description: "",
-                        last_open_timestamp: "1764764093",
-                    },
-                },
-                (err, ok) => {
-                    if (ok) console.log("config saved!");
-                }
-            );
         },
         build() {
-
             const button = hmUI.createWidget(hmUI.widget.BUTTON, {
                 x: px(60),
                 y: px(400),
@@ -155,7 +117,7 @@ Page(
                 text: "开始",
                 click_func: () => {
                     console.log("button clicked");
-                    zosRouter.push({
+                    hmRouter.push({
                         url: "page/Home/index",
                     });
                 },
@@ -163,33 +125,84 @@ Page(
             button.setProperty(hmUI.prop.VISIBLE, false);
             AsyncStorage.ReadJson("config.json", (err, config) => {
                 if (!err) {
+                    console.log("config.json found");
                     const unfinishedTasks = config.tasks.filter(
                         (task) => !task.done
                     );
                     setTimeout(() => {
                         this.arc.stop();
                         this.arc.destroy();
-                        this.textWidget = new TextTyper({
-                            text: {
-                                x: px(20),
-                                y: px((480 - 36) / 2),
-                                w: px(480),
-                                h: px(480),
-                                color: 0xffffff,
-                                text_size: px(26),
-                                text: [
-                                    welcomeGenerator.getRandomWelcome().message,
-                                    // "今天感觉怎么样？",
-                                    // `昨天还有${unfinishedTasks.length}个任务待完成哦~`,
-                                ],
-                            },
-                            charInterval: 50,
-                        });
-                        this.textWidget.start(() => {
-                            console.log("text typer finished");
-                            button.setProperty(hmUI.prop.VISIBLE, true);
-                        });
+                        // Today first Open
+                        // 判断是否是今天第一次打开
+                        // time.getTime()是现在的UTC时间戳
+                        // config.last_open_time是上次打开的时间戳
+                        if (
+                            isFirstOpenTodaySimple(
+                                time.getTime(),
+                                config.last_open_time
+                            )
+                        ) {
+                            welcomeGenerator.showWelcome();
+                            config.last_open_time = time.getTime();
+                            AsyncStorage.WriteJson(
+                                "config.json",
+                                config,
+                                () => {
+                                    this.textWidget = new TextTyper({
+                                        text: {
+                                            x: px(20),
+                                            y: px((480 - 36) / 2),
+                                            w: px(480),
+                                            h: px(480),
+                                            color: 0xffffff,
+                                            text_size: px(26),
+                                            text: [
+                                                welcomeGenerator.getRandomWelcome()
+                                                    .message,
+                                                // "今天感觉怎么样？",
+                                                // `昨天还有${unfinishedTasks.length}个任务待完成哦~`,
+                                            ],
+                                        },
+                                        charInterval: 50,
+                                    });
+                                    this.textWidget.start(() => {
+                                        console.log("text typer finished");
+                                        button.setProperty(
+                                            hmUI.prop.VISIBLE,
+                                            true
+                                        );
+                                    });
+                                }
+                            );
+                        }else {
+                            this.textWidget = new TextTyper({
+                                        text: {
+                                            x: px(20),
+                                            y: px((480 - 36) / 2),
+                                            w: px(480),
+                                            h: px(480),
+                                            color: 0xffffff,
+                                            text_size: px(26),
+                                            text: [
+                                                `今天还有${config.tasks.length}个任务待完成哦~`,
+                                            ],
+                                        },
+                                        charInterval: 50,
+                                    });
+                                    this.textWidget.start(() => {
+                                        console.log("text typer finished");
+                                        button.setProperty(
+                                            hmUI.prop.VISIBLE,
+                                            true
+                                        );
+                                    });
+                        }
                     }, 500);
+                } else {
+                    console.log("config.json not found");
+                    hmRouter.push({
+                        url: "page/Guide/index",
+                    });
                 }
             });
         },
