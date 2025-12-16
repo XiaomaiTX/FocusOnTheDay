@@ -37,7 +37,10 @@ export class ScrollListPage {
                 y: itemStyles.SETTINGS_BUTTON_STYLE.y + this.state.buttonOffset,
             });
             buttonBg.addEventListener(hmUI.event.CLICK_UP, () => {
-                this.state.items[i].action();
+                if (this.state.items[i] && this.state.items[i].action){
+                    this.state.items[i].action();
+                }
+                
             });
 
             const itemWidgets = {
