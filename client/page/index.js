@@ -1,13 +1,15 @@
-import { BasePage } from "@zeppos/zml/base-page";
-
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import { px } from "@zos/utils";
 import * as hmRouter from "@zos/router";
 import { Time } from "@zos/sensor";
+import hmDisplay from "@zos/display";
+
+import { BasePage } from "@zeppos/zml/base-page";
+import { AsyncStorage } from "@silver-zepp/easy-storage";
+
 
 import { ProgressArc } from "../components/ui/progress-arc";
-import { AsyncStorage } from "@silver-zepp/easy-storage";
 import { TextTyper } from "../components/ui/text-typer";
 
 const time = new Time();
@@ -99,6 +101,15 @@ function isFirstOpenTodaySimple(currentTime, lastOpenTime) {
 Page(
     BasePage({
         onInit() {
+            hmDisplay.pauseDropWristScreenOff({
+                duration: 0,
+            });
+            hmDisplay.pausePalmScreenOff({
+                duration: 0,
+            });
+            hmDisplay.setPageBrightTime({
+                brightTime: 2147483000,
+            });
             this.arc = new ProgressArc();
             this.arc.start();
 
@@ -137,11 +148,11 @@ Page(
                         // time.getTime()是现在的UTC时间戳
                         // config.last_open_time是上次打开的时间戳
                         if (
-                            // isFirstOpenTodaySimple(
-                            //     time.getTime(),
-                            //     config.last_open_time
-                            // )
-                            true
+                            isFirstOpenTodaySimple(
+                                time.getTime(),
+                                config.last_open_time
+                            )
+                            // true
                         ) {
                             welcomeGenerator.showWelcome();
                             config.last_open_time = time.getTime();
@@ -180,13 +191,14 @@ Page(
                             );
                         } else {
                             this.textWidget = new TextTyper({
+                                cursorEnable: false,
                                 text: {
-                                    x: px(20),
+                                    x: px(0),
                                     y: px((480 - 36) / 2),
                                     w: px(480),
-                                    h: px(480),
                                     color: 0xffffff,
                                     text_size: px(26),
+                                    align_h: hmUI.align.CENTER_H,
                                     text: [
                                         `今天还有${config.tasks.length}个任务待完成哦~`,
                                     ],

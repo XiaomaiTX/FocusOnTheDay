@@ -1,14 +1,14 @@
-import { BasePage } from "@zeppos/zml/base-page";
-
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmApp from "@zos/app";
 import { statSync } from "@zos/fs";
+import { px } from "@zos/utils";
+import * as hmDisplay from "@zos/display";
 
+import { BasePage } from "@zeppos/zml/base-page";
 import { SoundRecorder } from "@silver-zepp/easy-media/recorder";
 
 import { ScrollListPage } from "../../components/ScrollListPage";
-import { px } from "@zos/utils";
 
 const recorder = new SoundRecorder("mic-recording.opus");
 Page(
@@ -22,6 +22,16 @@ Page(
             recordCondition: "idle",
         },
         onInit() {
+            hmDisplay.pauseDropWristScreenOff({
+                duration: 0,
+            });
+            hmDisplay.pausePalmScreenOff({
+                duration: 0,
+            });
+            hmDisplay.setPageBrightTime({
+                brightTime: 2147483000,
+            });
+
             console.log(getText("example"));
         },
         build() {
@@ -138,16 +148,15 @@ Page(
                         recorder.stop();
                         setTimeout(() => {
                             const result = statSync({
-                            path: "mic-recording.opus",
-                        });
-                        console.log("[mic-recording.opus] result:", result);
+                                path: "mic-recording.opus",
+                            });
+                            console.log("[mic-recording.opus] result:", result);
 
-                        if (result) {
-                            const { size } = result;
-                            console.log("[mic-recording.opus] size:", size);
-                        }
-                        },5000)
-                        
+                            if (result) {
+                                const { size } = result;
+                                console.log("[mic-recording.opus] size:", size);
+                            }
+                        }, 5000);
                     }
                 },
             });

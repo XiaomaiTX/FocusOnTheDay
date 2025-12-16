@@ -2,20 +2,29 @@ import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmRouter from "@zos/router";
 import * as hmSensor from "@zos/sensor";
-
+import * as hmDisplay from "@zos/display";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
 
-import { ScrollListPage } from "../../components/ScrollListPage";
 import { ProgressArc } from "../../components/ui/progress-arc";
 import { TextTyper } from "../../components/ui/text-typer";
 
 const time = new hmSensor.Time();
 
-
 Page(
     BasePage({
+        onInit() {
+            hmDisplay.pauseDropWristScreenOff({
+                duration: 0,
+            });
+            hmDisplay.pausePalmScreenOff({
+                duration: 0,
+            });
+            hmDisplay.setPageBrightTime({
+                brightTime: 2147483000,
+            });
+        },
         build() {
             const arc = new ProgressArc();
             arc.start();
@@ -28,7 +37,6 @@ Page(
                         x: px(20),
                         y: px((480 - 36) / 2),
                         w: px(480),
-                        h: px(480),
                         color: 0xffffff,
                         text_size: px(26),
                         text: [
@@ -55,7 +63,6 @@ Page(
                             align_v: hmUI.align.CENTER_V,
                         });
                         mask.addEventListener(hmUI.event.CLICK_UP, () => {
-                            
                             arc.start();
                             AsyncStorage.WriteJson(
                                 "config.json",

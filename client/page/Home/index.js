@@ -1,6 +1,7 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmRouter from "@zos/router";
+import * as hmDisplay from "@zos/display";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -10,6 +11,17 @@ import { ProgressArc } from "../../components/ui/progress-arc";
 
 Page(
     BasePage({
+        onInit() {
+            hmDisplay.pauseDropWristScreenOff({
+                duration: 0,
+            });
+            hmDisplay.pausePalmScreenOff({
+                duration: 0,
+            });
+            hmDisplay.setPageBrightTime({
+                brightTime: 2147483000,
+            });
+        },
         build() {
             const arc = new ProgressArc();
             arc.start();
@@ -31,9 +43,9 @@ Page(
                         };
                         const priorityColorMap = {
                             urgent_important: 0xef4444,
-                            not_urgent_important: 0xEAB308,
-                            urgent_not_important: 0x0EA5E9,
-                            not_urgent_not_important: 0x6B7280,
+                            not_urgent_important: 0xeab308,
+                            urgent_not_important: 0x0ea5e9,
+                            not_urgent_not_important: 0x6b7280,
                         };
 
                         scrollListPageTestData.items.push({
@@ -42,7 +54,7 @@ Page(
                                 hmRouter.push({
                                     url: "page/add-tasks/index",
                                 });
-                            }
+                            },
                         });
                         config.tasks.forEach((task) => {
                             if (!task.done) {
@@ -55,8 +67,10 @@ Page(
                                     icon: "arrow-right-double-fill.png",
                                     customStyles: {
                                         SETTINGS_BUTTON_SUBTITLE_STYLE: {
-                                            color: priorityColorMap[task.priority]
-                                        }
+                                            color: priorityColorMap[
+                                                task.priority
+                                            ],
+                                        },
                                     },
                                     action: () => {
                                         hmRouter.push({
@@ -65,9 +79,8 @@ Page(
                                                 task: task,
                                             },
                                         });
-                                    }
+                                    },
                                 });
-
                             }
                         });
                         scrollListPageTestData.items.push({
@@ -77,8 +90,8 @@ Page(
                                 hmRouter.push({
                                     url: "page/settings/index",
                                 });
-                            }
-                        })
+                            },
+                        });
                         new ScrollListPage(scrollListPageTestData);
                     }, 700);
                 }
