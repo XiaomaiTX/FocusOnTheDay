@@ -1,11 +1,15 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
+import * as hmRouter from "@zos/router";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
+import { reactive, effect } from "@x1a0ma17x/zeppos-reactive";
 
 import { ScrollListPage } from "../../components/ScrollListPage";
 import { ProgressArc } from "../../components/ui/progress-arc";
+import { computed } from "@x1a0ma17x/zeppos-reactive";
+
 const priorityMap = {
     urgent_important: "紧急且重要",
     not_urgent_important: "不紧急但重要",
@@ -19,75 +23,178 @@ const priorityColorMap = {
     not_urgent_not_important: 0x6b7280,
 };
 
+const state = reactive({
+    _taskName: "",
+    taskName: "",
+    taskPriority: "无",
+    pageData: {},
+});
+
 Page(
     BasePage({
         onInit(params) {
-            this.params = JSON.parse(params);
-            console.log("params", JSON.parse(params));
-            console.log("this.params", JSON.stringify(this.params));
+            params = JSON.parse(params);
+            state._taskName = params.task?.name || "无";
+            state.taskName = params.task?.name || "无";
+            state.taskPriorityName = priorityMap[params.task?.priority] || "无";
+            state.taskPriorityColor =
+                priorityColorMap[params.task?.priority] || 0xffffff;
         },
         build() {
-            console.log("this.params", JSON.stringify(this.params));
-            console.log("get object key", Object.keys(this.params));
             const arc = new ProgressArc();
             arc.start();
-            ScrollListPage.setValue("taskName", this.params.task?.name);
+
             setTimeout(() => {
                 arc.stop();
                 arc.destroy();
 
-                const scrollListPageTestData = {
-                    title: "Tasks",
-                    items: [
-                        {
-                            title: "任务名称",
-                            description:
-                                ScrollListPage.getValue("taskName") || "无",
-                            value: "taskName",
-                            action: () => {
-                                hmUI.createKeyboard({
-                                    inputType: hmUI.inputType.JSKB,
-                                    onComplete: (_, result) => {
-                                        console.log("完成输入:", result.data);
-                                        ScrollListPage.setValue(
-                                            "taskName",
-                                            result.data
-                                        );
-                                        hmUI.deleteKeyboard();
-                                    },
-                                    onCancel: (_, result) => {
-                                        console.log("取消输入");
-                                        hmUI.deleteKeyboard();
-                                    },
-                                    text: this.params.task?.name,
-                                });
+                state.pageData = computed(() => {
+                    return {
+                        title: "Tasks",
+                        items: [
+                            {
+                                title: "完成任务",
+                                action: () => {
+                                    AsyncStorage.ReadJson(
+                                        "config.json",
+                                        (err, config) => {
+                                            if (!err) {
+                                                for (let i = 0; i < config.tasks.length; i++) {
+                                                    if (
+                                                        config.tasks[i].name ===
+                                                        state._taskName
+                                                    ) {
+                                                        config.tasks[i].done = true;
+                                                        break;
+                                                    }
+                                                }
+                                                AsyncStorage.WriteJson(
+                                                    "config.json",
+                                                    config,
+                                                    (err, ok) => {
+                                                        if (!err) {
+                                                            hmRouter.back();
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    );
+                                }
                             },
-                        },
-
-                        {
-                            title: "任务优先级",
-                            description:
-                                priorityMap[this.params.task?.priority] || "无",
-                            value: "taskPriority",
-                            action: () => {
-                            
-                            },
-
-                            customStyles: {
-                                SETTINGS_BUTTON_DESCRIPTION_STYLE: {
-                                    color: priorityColorMap[
-                                        this.params.task?.priority
-                                    ],
+                            {
+                                title: "任务名称",
+                                description: state.taskName || "无",
+                                action: () => {
+                                    hmUI.keyboard.clearInput();
+                                    // hmUI.keyboard.inputText(state.taskName);
+                                    hmUI.createKeyboard({
+                                        inputType: hmUI.inputType.CHAR,
+                                        onComplete: (_, result) => {
+                                            console.log(
+                                                "完成输入:",
+                                                result.data
+                                            );
+                                            state.taskName =
+                                                result.data || "无";
+                                            hmUI.deleteKeyboard();
+                                        },
+                                    });
                                 },
                             },
-                        },
-                    ],
-                };
 
-                scrollListPageTestData.items.push();
-                new ScrollListPage(scrollListPageTestData);
+                            {
+                                title: "任务优先级",
+                                description: state.taskPriorityName || "无",
+                                action: () => {},
+
+                                customStyles: {
+                                    SETTINGS_BUTTON_DESCRIPTION_STYLE: {
+                                        color:
+                                            state.taskPriorityColor || 0xffffff,
+                                    },
+                                },
+                            },
+                            {
+                                title: "删除任务",
+                                action: () => {
+                                    AsyncStorage.ReadJson(
+                                        "config.json",
+                                        (err, config) => {
+                                            if (!err) {
+                                                config.tasks =
+                                                    config.tasks.filter(
+                                                        (task) =>
+                                                            task.name !==
+                                                            state._taskName
+                                                    );
+                                                AsyncStorage.WriteJson(
+                                                    "config.json",
+                                                    config,
+                                                    (err, ok) => {
+                                                        if (!err) {
+                                                            hmRouter.back();
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    );
+                                },
+                            },
+                            {
+                                title: "完成并保存",
+                                action: () => {
+                                    AsyncStorage.ReadJson(
+                                        "config.json",
+                                        (err, config) => {
+                                            if (!err) {
+                                                for (let i = 0; i < config.tasks.length; i++) {
+                                                    if (
+                                                        config.tasks[i].name ===
+                                                        state._taskName
+                                                    ) {
+                                                        config.tasks[i].name =
+                                                            state.taskName;
+                                                        config.tasks[i].priority =
+                                                            Object.keys(
+                                                                priorityMap
+                                                            ).find(
+                                                                (key) =>
+                                                                    priorityMap[
+                                                                        key
+                                                                    ] ===
+                                                                    state.taskPriorityName
+                                                            ) || null;
+                                                        break;
+                                                    }
+                                                }
+                                                AsyncStorage.WriteJson(
+                                                    "config.json",
+                                                    config,
+                                                    (err, ok) => {
+                                                        if (!err) {
+                                                            hmRouter.back();
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    );
+                                },
+                            },
+                        ],
+                    };
+                });
+                const page = new ScrollListPage(state.pageData.value);
+                effect(() => {
+                    console.log("state.taskName changed:", state.taskName);
+                    page.updateUI(state.pageData.value);
+                });
             }, 700);
         },
-        onDestroy() {},
+        onDestroy() {
+            AsyncStorage.SaveAndQuit();
+        },
     })
 );

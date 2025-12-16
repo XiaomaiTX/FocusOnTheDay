@@ -1,6 +1,8 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmRouter from "@zos/router";
+import * as hmSensor from "@zos/sensor";
+
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -8,6 +10,9 @@ import { AsyncStorage } from "@silver-zepp/easy-storage";
 import { ScrollListPage } from "../../components/ScrollListPage";
 import { ProgressArc } from "../../components/ui/progress-arc";
 import { TextTyper } from "../../components/ui/text-typer";
+
+const time = new hmSensor.Time();
+
 
 Page(
     BasePage({
@@ -50,6 +55,7 @@ Page(
                             align_v: hmUI.align.CENTER_V,
                         });
                         mask.addEventListener(hmUI.event.CLICK_UP, () => {
+                            
                             arc.start();
                             AsyncStorage.WriteJson(
                                 "config.json",
@@ -59,7 +65,6 @@ Page(
                                         {
                                             name: "完成预算报告",
                                             today: true,
-                                            done: false,
                                             priority: "urgent_important",
                                             notificationTime:
                                                 "2024-06-01T10:00:00",
@@ -67,25 +72,21 @@ Page(
                                         {
                                             name: "参加例会",
                                             today: true,
-                                            done: false,
                                             priority: "urgent_not_important",
                                         },
                                         {
                                             name: "健身",
                                             today: true,
-                                            done: false,
                                             priority: "not_urgent_important",
                                         },
                                         {
                                             name: "回复客户邮件",
                                             today: false,
-                                            done: false,
                                             priority: "urgent_not_important",
                                         },
                                         {
                                             name: "整理桌面",
                                             today: false,
-                                            done: true,
                                             priority:
                                                 "not_urgent_not_important",
                                         },
@@ -95,7 +96,7 @@ Page(
                                         notification_time: "09:00",
                                         backend_url: "https://api.example.com",
                                         user_profile_description: "",
-                                        last_open_timestamp: "1764764093",
+                                        last_open_timestamp: time.getTime,
                                     },
                                 },
                                 (err, ok) => {

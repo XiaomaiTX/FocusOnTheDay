@@ -1,28 +1,17 @@
 // import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 
-import { EasyStorage } from "@silver-zepp/easy-storage";
-const storage = new EasyStorage();
+import { reactive, effect } from "@x1a0ma17x/zeppos-reactive";
 
 export class ScrollListPage {
-    /**
-     * @param {Object} params
-     * @param {string} params.title title of the page
-     * @param {Array} params.items list of items to be displayed
-     * @param {string} params.items[].title title of the item
-     * @param {string} [params.items[].description] description of the item
-     * @param {string} [params.items[].value] storage key to get the value to be displayed
-     * @param {string} [params.items[].icon] icon of the item
-     * @param {Function} [params.items[].action] action to be performed on item click
-     * @param {Object} [params.customStyles] custom styles for the page
-     */
     constructor(/** @type {Object} */ params) {
         this.state = {
             buttonOffset: 0,
-            items: params.items,
+            items: [],
             widgets: [],
         };
 
+        this.state.items = params.items || [];
         this.styles = this.mergeStyles(Styles, params.customStyles || {});
 
         hmUI.createWidget(hmUI.widget.TEXT, {
@@ -33,15 +22,14 @@ export class ScrollListPage {
         const buttonsGroup = hmUI.createWidget(hmUI.widget.GROUP, {
             ...this.styles.SETTINGS_CONTAINER_STYLE,
             h:
-                params.items.length *
+                this.state.items.length *
                 (this.styles.SETTINGS_BUTTON_STYLE.h + px(10)),
         });
 
-        for (let i = 0; i < params.items.length; i++) {
-            const itemData = params.items[i];
+        for (let i = 0; i < this.state.items.length; i++) {
             const itemStyles = this.mergeStyles(
                 this.styles,
-                itemData.customStyles || {}
+                this.state.items[i].customStyles || {}
             );
 
             const buttonBg = buttonsGroup.createWidget(hmUI.widget.FILL_RECT, {
@@ -49,7 +37,7 @@ export class ScrollListPage {
                 y: itemStyles.SETTINGS_BUTTON_STYLE.y + this.state.buttonOffset,
             });
             buttonBg.addEventListener(hmUI.event.CLICK_UP, () => {
-                itemData.action();
+                this.state.items[i].action();
             });
 
             const itemWidgets = {
@@ -60,155 +48,65 @@ export class ScrollListPage {
                 descriptionWidget: null,
                 iconWidget: null,
             };
-            if (itemData && itemData.description) {
-                itemWidgets.subtitleWidget = buttonsGroup
-                    .createWidget(hmUI.widget.TEXT, {
-                        ...itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE,
-                        y:
-                            itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE.y +
-                            this.state.buttonOffset,
-                        text: itemData.title,
-                    })
-                    .setEnable(false);
+            if (this.state.items[i]) {
+                // 如果有description字段（不论是否为空字符串），就创建subtitle和description
+                if (this.state.items[i].hasOwnProperty("description")) {
+                    itemWidgets.subtitleWidget = buttonsGroup.createWidget(
+                        hmUI.widget.TEXT,
+                        {
+                            ...itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE,
+                            y:
+                                itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE.y +
+                                this.state.buttonOffset,
+                            text: this.state.items[i].title,
+                        }
+                    );
+                    itemWidgets.subtitleWidget.setEnable(false);
 
-                if (itemData.value) {
-                    itemWidgets.subtitleWidget = buttonsGroup
-                        .createWidget(hmUI.widget.TEXT, {
+                    // 总是创建descriptionWidget
+                    itemWidgets.descriptionWidget = buttonsGroup.createWidget(
+                        hmUI.widget.TEXT,
+                        {
                             ...itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
                             y:
                                 itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE.y +
                                 this.state.buttonOffset,
-                            text: storage.getKey(itemData.value),
-                        })
-                        .setEnable(false);
+                            text: this.state.items[i].description || "",
+                        }
+                    );
+                    itemWidgets.descriptionWidget.setEnable(false);
                 } else {
-                    itemWidgets.subtitleWidget = buttonsGroup
-                        .createWidget(hmUI.widget.TEXT, {
-                            ...itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
+                    // 无description，仅显示title
+                    itemWidgets.titleWidget = buttonsGroup.createWidget(
+                        hmUI.widget.TEXT,
+                        {
+                            ...itemStyles.SETTINGS_BUTTON_TITLE_STYLE,
                             y:
-                                itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE.y +
+                                itemStyles.SETTINGS_BUTTON_TITLE_STYLE.y +
                                 this.state.buttonOffset,
-                            text: itemData.description,
-                        })
-                        .setEnable(false);
+                            text: this.state.items[i].title,
+                        }
+                    );
+                    itemWidgets.titleWidget.setEnable(false);
                 }
-            } else if (itemData) {
-                itemWidgets.subtitleWidget = buttonsGroup
-                    .createWidget(hmUI.widget.TEXT, {
-                        ...itemStyles.SETTINGS_BUTTON_TITLE_STYLE,
-                        y:
-                            itemStyles.SETTINGS_BUTTON_TITLE_STYLE.y +
-                            this.state.buttonOffset,
-                        text: itemData.title,
-                    })
-                    .setEnable(false);
             }
-
-            if (itemData && itemData.icon) {
-                itemWidgets.subtitleWidget = buttonsGroup
-                    .createWidget(hmUI.widget.IMG, {
+            if (this.state.items[i] && this.state.items[i].icon) {
+                // 有icon时，显示icon
+                itemWidgets.iconWidget = buttonsGroup.createWidget(
+                    hmUI.widget.IMG,
+                    {
                         ...itemStyles.SETTINGS_BUTTON_ICON_STYLE,
                         y:
                             itemStyles.SETTINGS_BUTTON_ICON_STYLE.y +
                             this.state.buttonOffset,
-                        src: itemData.icon,
-                    })
-                    .setEnable(false);
+                        src: this.state.items[i].icon,
+                    }
+                );
+                itemWidgets.iconWidget.setEnable(false);
             }
             this.state.widgets.push(itemWidgets);
             this.state.buttonOffset +=
                 itemStyles.SETTINGS_BUTTON_STYLE.h + px(10);
-        }
-    }
-    static setValue(key, value) {
-        storage.setKey(key, value);
-        console.log(storage.getKey(key));
-    }
-
-    static getValue(key) {
-        console.log(storage.getKey(key));
-        return storage.getKey(key);
-    }
-     updateItemTextByTitle(title, updates) {
-        for (let i = 0; i < this.state.items.length; i++) {
-            if (this.state.items[i].title === title) {
-                this.updateItemText(i, updates);
-            }
-        }
-    }
-     updateItemText(itemIndex, updates) {
-        if (itemIndex >= 0 && itemIndex < this.state.widgets.length) {
-            const itemWidgets = this.state.widgets[itemIndex];
-            const itemData = this.state.items[itemIndex];
-
-            if (updates.title !== undefined && itemWidgets.subtitleWidget) {
-                console.log("updates.title", updates.title);
-                itemWidgets.subtitleWidget.setProperty(
-                    hmUI.prop.MORE,{
-                        x: itemWidgets.subtitleWidget.getProperty(hmUI.prop.X),
-                        y: itemWidgets.subtitleWidget.getProperty(hmUI.prop.Y),
-                        w: itemWidgets.subtitleWidget.getProperty(hmUI.prop.W),
-                        h: itemWidgets.subtitleWidget.getProperty(hmUI.prop.H),
-                        text: updates.title
-                    }
-                );
-                itemData.title = updates.title;
-            }
-
-            if (
-                updates.description !== undefined &&
-                itemWidgets.descriptionWidget
-            ) {
-                console.log("updates.description", updates.description);
-                itemWidgets.descriptionWidget.setProperty(
-                    hmUI.prop.MORE, {
-                        x: itemWidgets.descriptionWidget.getProperty(hmUI.prop.X),
-                        y: itemWidgets.descriptionWidget.getProperty(hmUI.prop.Y),
-                        w: itemWidgets.descriptionWidget.getProperty(hmUI.prop.W),
-                        h: itemWidgets.descriptionWidget.getProperty(hmUI.prop.H),
-                        text: updates.description
-                    }
-                );
-                itemData.description = updates.description;
-            }
-
-            if (
-                updates.value !== undefined &&
-                itemData.value &&
-                itemWidgets.descriptionWidget
-            ) {
-                console.log("updates.value", updates.value);
-                storage.setKey(itemData.value, updates.value);
-                itemWidgets.descriptionWidget.setProperty(
-                    hmUI.prop.MORE, {
-                        x: itemWidgets.descriptionWidget.getProperty(hmUI.prop.X),
-                        y: itemWidgets.descriptionWidget.getProperty(hmUI.prop.Y),
-                        w: itemWidgets.descriptionWidget.getProperty(hmUI.prop.W),
-                        h: itemWidgets.descriptionWidget.getProperty(hmUI.prop.H),
-                        text: updates.value
-                    }
-                );
-            }
-        }
-    }
-    static refreshDisplayValues() {
-        for (let i = 0; i < this.state.widgets.length; i++) {
-            const itemWidgets = this.state.widgets[i];
-            const itemData = this.state.items[i];
-
-            if (itemData.value && itemWidgets.descriptionWidget) {
-                const storedValue = storage.getKey(itemData.value);
-                itemWidgets.descriptionWidget.setProperty(
-                    hmUI.prop.MORE,{
-                        x: itemWidgets.descriptionWidget.getProperty(hmUI.prop.X),
-                        y: itemWidgets.descriptionWidget.getProperty(hmUI.prop.Y),
-                        w: itemWidgets.descriptionWidget.getProperty(hmUI.prop.W),
-                        h: itemWidgets.descriptionWidget.getProperty(hmUI.prop.H),
-                        text: storedValue
-                    }
-                );
-                itemData.description = storedValue;
-            }
         }
     }
     mergeStyles(defaultStyles, customStyles) {
@@ -227,6 +125,35 @@ export class ScrollListPage {
         }
 
         return merged;
+    }
+    updateUI(params) {
+        for (let i = 0; i < params.items.length; i++) {
+            const itemData = params.items[i];
+            const itemWidgets = this.state.widgets[i];
+            if (itemData) {
+                if (itemData.hasOwnProperty("description")) {
+                    itemWidgets.subtitleWidget.setProperty(
+                        hmUI.prop.TEXT,
+                        itemData.title
+                    );
+                    itemWidgets.descriptionWidget.setProperty(
+                        hmUI.prop.TEXT,
+                        itemData.description || ""
+                    );
+                } else {
+                    itemWidgets.titleWidget.setProperty(
+                        hmUI.prop.TEXT,
+                        itemData.title
+                    );
+                }
+            }
+            if (itemData && itemData.icon) {
+                itemWidgets.iconWidget.setProperty(
+                    hmUI.prop.SRC,
+                    itemData.icon
+                );
+            }
+        }
     }
 }
 

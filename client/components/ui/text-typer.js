@@ -11,6 +11,7 @@ const CONDITION = {
 export class TextTyper {
     constructor(/** @type {Object} */ params = {}) {
         this.params = {
+            cursorEnable: params.cursorEnable ?? true,
             charInterval: params.charInterval ?? 100,
             text: {
                 x: params.text?.x ?? px(0),
@@ -41,21 +42,18 @@ export class TextTyper {
         this.textWidget = hmUI.createWidget(hmUI.widget.TEXT, {
             x: this.params.text.x,
             y: this.params.text.y,
-            w: hmUI.getTextLayout(
-                this.params.text.text[this.currentTextIndex],
-                {
-                    text_size: this.params.text.text_size,
-                    text_width: 0,
-                }
-            ).width,
-            h: this.params.text.text_size + px(10),
+            w: this.params.text.w,
+            h: this.params.text.h,
             align_h: this.params.text.align_h,
             align_v: this.params.text.align_v,
             color: this.params.text.color,
             text_size: this.params.text.text_size,
             text: this.params.text.text[this.currentTextIndex],
         });
-        this.cursor = hmUI.createWidget(hmUI.widget.FILL_RECT, {
+        if (this.params.cursorEnable) this.createCursor();
+    }
+    createCursor() {
+            this.cursor = hmUI.createWidget(hmUI.widget.FILL_RECT, {
             x: this.params.text.x,
             y: this.params.text.y,
             w: this.params.cursor.width,
@@ -102,10 +100,6 @@ export class TextTyper {
                     this.displayedText += this.textBuffer.charAt(charIndex);
                     this.textWidget.setProperty(hmUI.prop.MORE, {
                         text: this.displayedText,
-                        w: hmUI.getTextLayout(this.displayedText, {
-                            text_size: this.params.text.text_size,
-                            text_width: 0,
-                        }).width,
                     });
                     charIndex++;
                     this.moveCursorToEnd();
@@ -153,6 +147,7 @@ export class TextTyper {
         removeNextChar();
     }
     moveCursorToEnd() {
+        if (!this.params.cursorEnable) return;
         const textLayout = hmUI.getTextLayout(this.displayedText, {
             text_size: this.params.text.text_size,
             text_width: 0,

@@ -105,10 +105,6 @@ Page(
             // Debug
         },
         build() {
-            // DEBUG
-            hmRouter.push({
-                url: "page/settings/index",
-            });
             const button = hmUI.createWidget(hmUI.widget.BUTTON, {
                 x: px(60),
                 y: px(400),
@@ -131,7 +127,7 @@ Page(
                 if (!err) {
                     console.log("config.json found");
                     const unfinishedTasks = config.tasks.filter(
-                        (task) => !task.done
+                        (task) => !task.today
                     );
                     setTimeout(() => {
                         this.arc.stop();
@@ -141,10 +137,11 @@ Page(
                         // time.getTime()是现在的UTC时间戳
                         // config.last_open_time是上次打开的时间戳
                         if (
-                            isFirstOpenTodaySimple(
-                                time.getTime(),
-                                config.last_open_time
-                            )
+                            // isFirstOpenTodaySimple(
+                            //     time.getTime(),
+                            //     config.last_open_time
+                            // )
+                            true
                         ) {
                             welcomeGenerator.showWelcome();
                             config.last_open_time = time.getTime();
@@ -153,17 +150,21 @@ Page(
                                 config,
                                 () => {
                                     this.textWidget = new TextTyper({
+                                        cursorEnable: false,
                                         text: {
-                                            x: px(20),
+                                            x: px(0),
                                             y: px((480 - 36) / 2),
                                             w: px(480),
-                                            h: px(480),
                                             color: 0xffffff,
                                             text_size: px(26),
+                                            align_h: hmUI.align.CENTER_H,
                                             text: [
                                                 welcomeGenerator.getRandomWelcome()
                                                     .message,
-                                                // "今天感觉怎么样？",
+                                                unfinishedTasks.length === 0
+                                                    ? "太棒了！昨天的任务都已完成啦~"
+                                                    : `昨天还有${unfinishedTasks.length}个任务待完成哦~`,
+                                                "今天感觉怎么样？",
                                                 // `昨天还有${unfinishedTasks.length}个任务待完成哦~`,
                                             ],
                                         },
@@ -171,10 +172,9 @@ Page(
                                     });
                                     this.textWidget.start(() => {
                                         console.log("text typer finished");
-                                        button.setProperty(
-                                            hmUI.prop.VISIBLE,
-                                            true
-                                        );
+                                        hmRouter.push({
+                                            url: "page/home/index",
+                                        });
                                     });
                                 }
                             );
@@ -195,7 +195,9 @@ Page(
                             });
                             this.textWidget.start(() => {
                                 console.log("text typer finished");
-                                button.setProperty(hmUI.prop.VISIBLE, true);
+                                hmRouter.push({
+                                    url: "page/home/index",
+                                });
                             });
                         }
                     }, 500);

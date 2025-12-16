@@ -4,32 +4,27 @@
         {
             "name": "完成预算报告",
             "today": true,
-            "done": false,
             "priority": "urgent_important",
             "notificationTime": "2024-06-01T10:00:00"
         },
         {
             "name": "参加例会",
             "today": true,
-            "done": false,
             "priority": "urgent_not_important"
         },
         {
             "name": "健身",
             "today": true,
-            "done": false,
             "priority": "not_urgent_important"
         },
         {
             "name": "回复客户邮件",
             "today": false,
-            "done": true,
             "priority": "urgent_not_important"
         },
         {
             "name": "整理桌面",
             "today": false,
-            "done": true,
             "priority": "not_urgent_not_important"
         }
     ],

@@ -1,6 +1,7 @@
 import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmInteraction from "@zos/interaction";
+import * as hmRouter from "@zos/router";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -53,7 +54,7 @@ Page(
                                     description: config.settings.backend_url,
                                 },
                                 {
-                                    title: "user_profile_description",
+                                    title: "User Profile Description",
                                     description:
                                         config.settings
                                             .user_profile_description,
