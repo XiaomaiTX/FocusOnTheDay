@@ -6,21 +6,17 @@ import { px } from "@zos/utils";
 import * as hmDisplay from "@zos/display";
 
 import { BasePage } from "@zeppos/zml/base-page";
-import { SoundRecorder } from "@silver-zepp/easy-media/recorder";
+import { reactive, effect, computed } from "@x1a0ma17x/zeppos-reactive";
 
 import { ScrollListPage } from "../../components/ScrollListPage";
 
-const recorder = new SoundRecorder("mic-recording.opus");
+const state = reactive({
+    inputText: "",
+});
+
 Page(
     BasePage({
-        state: {
-            voiceText: "",
-            recordConditions: {
-                IDLE: "idle",
-                RECORDING: "recording",
-            },
-            recordCondition: "idle",
-        },
+        state: {},
         onInit() {
             hmDisplay.pauseDropWristScreenOff({
                 duration: 0,
@@ -36,7 +32,7 @@ Page(
         },
         build() {
             console.log(getText("example"));
-            const voiceText = `完了完了，感觉要挂科了！
+            state.inputText = `完了完了，感觉要挂科了！
             后天要考微观经济学，笔记还没整理完。
             明天是小组展示的截止日期，PPT才做了一半。
             学生会办的讲座今晚就要开始了，场地布置还没弄。导师催的论文开题报告这周必须交。  
@@ -84,12 +80,10 @@ Page(
                 ],
             };
 
-            // 根据testResponse生成scrollListPageTestData示例数据
             const scrollListPageTestData = {
                 title: "Tasks",
                 items: [],
             };
-            // 遍历testResponse.sortedTasks，生成items，每个item的标题是task，描述是优先级类别
             const priorityMap = {
                 urgent_important: "紧急且重要",
                 not_urgent_important: "不紧急但重要",
@@ -103,61 +97,27 @@ Page(
                     description: priorityMap[taskObj.priority] || "未知优先级",
                 });
             });
-            const recordButton = hmUI.createWidget(hmUI.widget.BUTTON, {
-                x: px((480 - 200) / 2),
-                y: px(400),
-                w: px(200),
-                h: px(60),
-                radius: px(12),
-                normal_color: 0xe5e5e5,
-                press_color: 0xcfcfcf,
-                color: 0x000000,
-                text: "Tap To Speak",
+
+            const voiceButton = hmUI.createWidget(hmUI.widget.BUTTON, {
+                x: px(156),
+                y: px(360),
+                w: -1,
+                h: -1,
+                normal_src: "voiceButton@1x.png",
+                press_src: "voiceButton_press@1x.png",
                 click_func: () => {
-                    console.log("button clicked");
-                    if (
-                        this.state.recordCondition ===
-                        this.state.recordConditions.IDLE
-                    ) {
-                        console.log("开始录音");
-                        this.state.recordCondition =
-                            this.state.recordConditions.RECORDING;
-                        recordButton.setProperty(hmUI.prop.MORE, {
-                            x: recordButton.getProperty(hmUI.prop.X),
-                            y: recordButton.getProperty(hmUI.prop.Y),
-                            w: recordButton.getProperty(hmUI.prop.W),
-                            h: recordButton.getProperty(hmUI.prop.H),
-
-                            text: "Stop",
-                        });
-                        recorder.start();
-                    } else if (
-                        this.state.recordCondition ===
-                        this.state.recordConditions.RECORDING
-                    ) {
-                        console.log("结束录音");
-                        this.state.recordCondition =
-                            this.state.recordConditions.IDLE;
-                        recordButton.setProperty(hmUI.prop.MORE, {
-                            x: recordButton.getProperty(hmUI.prop.X),
-                            y: recordButton.getProperty(hmUI.prop.Y),
-                            w: recordButton.getProperty(hmUI.prop.W),
-                            h: recordButton.getProperty(hmUI.prop.H),
-                            text: "Processing...",
-                        });
-                        recorder.stop();
-                        setTimeout(() => {
-                            const result = statSync({
-                                path: "mic-recording.opus",
-                            });
-                            console.log("[mic-recording.opus] result:", result);
-
-                            if (result) {
-                                const { size } = result;
-                                console.log("[mic-recording.opus] size:", size);
-                            }
-                        }, 5000);
-                    }
+                    console.log("button click");
+                },
+            });
+            const keyboardButton = hmUI.createWidget(hmUI.widget.BUTTON, {
+                x: px(260),
+                y: px(360),
+                w: -1,
+                h: -1,
+                normal_src: "keyboardButton@1x.png",
+                press_src: "keyboardButton_press@1x.png",
+                click_func: () => {
+                    console.log("button click");
                 },
             });
             // new ScrollListPage(scrollListPageTestData);

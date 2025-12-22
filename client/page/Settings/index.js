@@ -12,7 +12,7 @@ import { ProgressArc } from "../../components/ui/progress-arc";
 const arc = new ProgressArc();
 
 const state = reactive({
-    daily_notifications: "true",
+    daily_notifications: true,
     notification_time: "08:00",
     backend_url: "",
     user_profile_description: "",
@@ -35,10 +35,8 @@ Page(
 
             AsyncStorage.ReadJson("config.json", (err, config) => {
                 if (!err) {
-                    state.daily_notifications = config.settings
-                        .daily_notifications
-                        ? "true"
-                        : "false";
+                    state.daily_notifications =
+                        config.settings.daily_notifications || true;
                     state.notification_time =
                         config.settings.notification_time || "08:00";
                     state.backend_url = config.settings.backend_url || "";
@@ -58,8 +56,9 @@ Page(
                         items: [
                             {
                                 title: "Daily Notifications",
-                                description:
-                                    state.daily_notifications || "false",
+                                description: state.daily_notifications
+                                    ? "true"
+                                    : "false" || false,
                                 action: () => this.changeDailyNotifications(),
                             },
                             {
@@ -98,14 +97,17 @@ Page(
 
                 const page = new ScrollListPage(state.pageData.value);
                 effect(() => {
-                    console.log("state changed");
+                    state.daily_notifications;
+                    state.notification_time;
+                    state.backend_url;
+                    state.user_profile_description;
                     page.updateUI(state.pageData.value);
                 });
             }, 700);
         },
         changeDailyNotifications() {
             console.log("Toggling daily_notifications");
-            state.daily_notifications += "1";
+            state.daily_notifications = !state.daily_notifications;
             console.log("New value:", state.daily_notifications);
         },
         editBackendUrl() {

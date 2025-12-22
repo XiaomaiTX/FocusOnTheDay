@@ -46,7 +46,6 @@ class WelcomeMessageGenerator {
         };
     }
 
-    // 获取时间段
     getPeriod(hours) {
         if (hours >= 0 && hours < 5) return "earlyMorning";
         if (hours >= 5 && hours < 12) return "morning";
@@ -56,7 +55,6 @@ class WelcomeMessageGenerator {
         return "night";
     }
 
-    // 获取随机的欢迎语
     getRandomWelcome() {
         const hours = time.getHours();
         const period = this.getPeriod(hours);
@@ -75,7 +73,6 @@ class WelcomeMessageGenerator {
         };
     }
 
-    // 获取欢迎语并显示
     showWelcome() {
         const welcome = this.getRandomWelcome();
         console.log(
@@ -87,14 +84,11 @@ class WelcomeMessageGenerator {
 const welcomeGenerator = new WelcomeMessageGenerator();
 
 function isFirstOpenTodaySimple(currentTime, lastOpenTime) {
-    // 1. 边界情况处理
     if (!lastOpenTime || lastOpenTime === 0) return true;
 
-    // 2. 日期转换和比较
     const currentDate = new Date(currentTime).toDateString();
     const lastOpenDate = new Date(lastOpenTime).toDateString();
 
-    // 3. 返回比较结果
     return currentDate !== lastOpenDate;
 }
 
@@ -112,29 +106,9 @@ Page(
             });
             this.arc = new ProgressArc();
             this.arc.start();
-
-            // Debug
         },
         build() {
-            const button = hmUI.createWidget(hmUI.widget.BUTTON, {
-                x: px(60),
-                y: px(400),
-                w: px(480 - 120),
-                h: px(60),
-                radius: 12,
-                normal_color: 0xe5e5e5,
-                press_color: 0xcfcfcf,
-                color: 0x000000,
-                text: "开始",
-                click_func: () => {
-                    console.log("button clicked");
-                    hmRouter.push({
-                        url: "page/home/index",
-                    });
-                },
-            });
-            button.setProperty(hmUI.prop.VISIBLE, false);
-            AsyncStorage.ReadJson("config.json", (err, config) => {
+           AsyncStorage.ReadJson("config.json", (err, config) => {
                 if (!err) {
                     console.log("config.json found");
                     const unfinishedTasks = config.tasks.filter(

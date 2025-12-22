@@ -9,25 +9,17 @@ import { reactive, effect, computed } from "@x1a0ma17x/zeppos-reactive";
 
 import { ScrollListPage } from "../../components/ScrollListPage";
 import { ProgressArc } from "../../components/ui/progress-arc";
+
+import { priorityOrder, priorityMap, priorityColorMap } from "../../enums/task";
+
 const arc = new ProgressArc();
 
-const priorityMap = {
-    urgent_important: "紧急且重要",
-    not_urgent_important: "不紧急但重要",
-    urgent_not_important: "紧急但不重要",
-    not_urgent_not_important: "不紧急且不重要",
-};
-const priorityColorMap = {
-    urgent_important: 0xef4444,
-    not_urgent_important: 0xeab308,
-    urgent_not_important: 0x0ea5e9,
-    not_urgent_not_important: 0x6b7280,
-};
 
 const state = reactive({
     _taskName: "",
     taskName: "",
     taskPriority: "无",
+    taskPriorityName: "无",
     pageData: {},
 });
 
@@ -47,6 +39,7 @@ Page(
             params = JSON.parse(params);
             state._taskName = params.task?.name || "无";
             state.taskName = params.task?.name || "无";
+            state.taskPriority = params.task?.priority || "无";
             state.taskPriorityName = priorityMap[params.task?.priority] || "无";
             state.taskPriorityColor =
                 priorityColorMap[params.task?.priority] || 0xffffff;
@@ -63,6 +56,15 @@ Page(
                             {
                                 title: "完成任务",
                                 action: () => this.finishTask(),
+                                customStyles: {
+                                    SETTINGS_BUTTON_STYLE: {
+                                        color: 0xE5E5E5,
+                                    },
+                                    SETTINGS_BUTTON_TITLE_STYLE: {
+                                        color: 0x000000,
+                                        align_h: hmUI.align.CENTER_H,
+                                    },
+                                },
                             },
                             {
                                 title: "任务名称",
@@ -73,7 +75,7 @@ Page(
                             {
                                 title: "任务优先级",
                                 description: state.taskPriorityName || "无",
-                                action: () => {},
+                                action: () => this.editTaskPriority(),
 
                                 customStyles: {
                                     SETTINGS_BUTTON_DESCRIPTION_STYLE: {
@@ -83,7 +85,7 @@ Page(
                                 },
                             },
                             {
-                                title: "完成并保存",
+                                title: "保存并退出",
                                 action: () => this.SaveAndQuit(),
                                 customStyles: {
                                     SETTINGS_BUTTON_TITLE_STYLE: {
@@ -96,7 +98,10 @@ Page(
                 });
                 const page = new ScrollListPage(state.pageData.value);
                 effect(() => {
-                    console.log("state.taskName changed:", state.taskName);
+                    state.taskName;
+                    state.taskPriority;
+                    state.taskPriorityName;
+                    state.taskPriorityColor;
                     page.updateUI(state.pageData.value);
                 });
             }, 700);
@@ -106,7 +111,7 @@ Page(
                 if (!err) {
                     for (let i = 0; i < config.tasks.length; i++) {
                         if (config.tasks[i].name === state._taskName) {
-                            config.tasks[i].done = true;
+                            config.tasks.splice(i, 1);
                             break;
                         }
                     }
@@ -120,15 +125,29 @@ Page(
         },
         editTaskName() {
             hmUI.keyboard.clearInput();
-            // hmUI.keyboard.inputText(state.taskName);
             hmUI.createKeyboard({
-                inputType: hmUI.inputType.CHAR,
+                inputType: hmUI.inputType.JSKB,
                 onComplete: (_, result) => {
                     console.log("完成输入:", result.data);
                     state.taskName = result.data || "无";
                     hmUI.deleteKeyboard();
                 },
+                text: state.taskName || "无",
             });
+        },
+        editTaskPriority() {
+            let currentIndex = priorities.indexOf(state.taskPriority);
+            currentIndex = (currentIndex + 1) % (priorities.length + 1);
+            if (currentIndex === priorities.length) {
+                state.taskPriority = "无";
+                state.taskPriorityName = "无";
+                state.taskPriorityColor = 0xffffff;
+            } else {
+                const priorityKey = priorities[currentIndex];
+                state.taskPriority = priorityKey;
+                state.taskPriorityName = priorityMap[priorityKey];
+                state.taskPriorityColor = priorityColorMap[priorityKey];
+            }
         },
         SaveAndQuit() {
             AsyncStorage.ReadJson("config.json", (err, config) => {

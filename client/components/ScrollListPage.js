@@ -37,10 +37,9 @@ export class ScrollListPage {
                 y: itemStyles.SETTINGS_BUTTON_STYLE.y + this.state.buttonOffset,
             });
             buttonBg.addEventListener(hmUI.event.CLICK_UP, () => {
-                if (this.state.items[i] && this.state.items[i].action){
+                if (this.state.items[i] && this.state.items[i].action) {
                     this.state.items[i].action();
                 }
-                
             });
 
             const itemWidgets = {
@@ -130,24 +129,40 @@ export class ScrollListPage {
         return merged;
     }
     updateUI(params) {
+        this.state.buttonOffset = 0;
         for (let i = 0; i < params.items.length; i++) {
             const itemData = params.items[i];
             const itemWidgets = this.state.widgets[i];
+
+            const itemStyles = this.mergeStyles(
+                this.styles,
+                params.items[i].customStyles || {}
+            );
+
             if (itemData) {
                 if (itemData.hasOwnProperty("description")) {
-                    itemWidgets.subtitleWidget.setProperty(
-                        hmUI.prop.TEXT,
-                        itemData.title
-                    );
-                    itemWidgets.descriptionWidget.setProperty(
-                        hmUI.prop.TEXT,
-                        itemData.description || ""
-                    );
+                    itemWidgets.subtitleWidget.setProperty(hmUI.prop.MORE, {
+                        ...itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE,
+                        y:
+                            itemStyles.SETTINGS_BUTTON_SUBTITLE_STYLE.y +
+                            this.state.buttonOffset,
+                        text: itemData.title,
+                    });
+                    itemWidgets.descriptionWidget.setProperty(hmUI.prop.MORE, {
+                        ...itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE,
+                        y:
+                            itemStyles.SETTINGS_BUTTON_DESCRIPTION_STYLE.y +
+                            this.state.buttonOffset,
+                        text: itemData.description || "",
+                    });
                 } else {
-                    itemWidgets.titleWidget.setProperty(
-                        hmUI.prop.TEXT,
-                        itemData.title
-                    );
+                    itemWidgets.titleWidget.setProperty(hmUI.prop.MORE, {
+                        ...itemStyles.SETTINGS_BUTTON_TITLE_STYLE,
+                        y:
+                            itemStyles.SETTINGS_BUTTON_TITLE_STYLE.y +
+                            this.state.buttonOffset,
+                        text: itemData.title,
+                    });
                 }
             }
             if (itemData && itemData.icon) {
@@ -156,6 +171,8 @@ export class ScrollListPage {
                     itemData.icon
                 );
             }
+            this.state.buttonOffset +=
+                itemStyles.SETTINGS_BUTTON_STYLE.h + px(10);
         }
     }
 }
