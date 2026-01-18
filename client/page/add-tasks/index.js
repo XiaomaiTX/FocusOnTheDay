@@ -48,57 +48,6 @@ Page(
         build() {
             console.log(getText("example"));
 
-            state.PageData = computed(() => {
-                return {
-                    title: "Confirm Tasks",
-                    items: [
-                        ...state.tasks.map((taskObj) => {
-                            return {
-                                title: taskObj.name,
-                                description:
-                                    priorityMap[taskObj.priority] ||
-                                    "未知优先级",
-                                customStyles: {
-                                    SETTINGS_BUTTON_SUBTITLE_STYLE: {
-                                        color: priorityColorMap[
-                                            taskObj.priority
-                                        ],
-                                    },
-                                },
-                            };
-                        }),
-                        {
-                            title: "Save",
-                            icon: "gear-fill.png",
-                            action: () => {
-                                AsyncStorage.ReadJson(
-                                    "config.json",
-                                    (err, config) => {
-                                        if (!err) {
-                                            for (const taskObj of state.tasks) {
-                                                config.tasks.push(taskObj);
-                                            }
-                                            AsyncStorage.WriteJson(
-                                                "config.json",
-                                                config,
-                                                (err, ok) => {
-                                                    if (ok) {
-                                                        console.log(
-                                                            "config.json saved"
-                                                        );
-                                                        hmRouter.back();
-                                                    }
-                                                }
-                                            );
-                                        }
-                                    }
-                                );
-                            },
-                        },
-                    ],
-                };
-            });
-
             effect(() => {
                 console.log("[effect]");
                 // arc.start();
@@ -137,7 +86,7 @@ Page(
                     ...this.Layout.KEYBOARD_BUTTON_LAYOUT,
                     ...this.Styles.KEYBOARD_BUTTON_STYLE,
                     click_func: () => this.keyboardButtonClick(),
-                }
+                },
             );
         },
         voiceButtonClick: function () {
@@ -147,7 +96,7 @@ Page(
                 onComplete: (_, result) => {
                     console.log("输入内容:", result.data);
                     hmUI.deleteKeyboard();
-                    // this.generateTaskList(result.data);
+                    this.generateTaskList(result.data);
                 },
                 onCancel: (_, result) => {
                     console.log("取消输入");
@@ -162,41 +111,7 @@ Page(
                 inputType: hmUI.inputType.JSKB,
                 onComplete: (_, result) => {
                     console.log("输入内容:", result.data);
-                    // state.inputText = result.data;
-                    state.tasks = this.generateTaskList(result.data);
-                    for (const task of state.tasks) {
-                        task.today = true;
-                    }
-                    state.widgets.scrollListPage = new ScrollListPage(
-                        state.PageData.value
-                    );
-
-                    console.log("state.tasks length:", state.tasks.length);
-
-                    // this.httpRequest({
-                    //     method: "post",
-                    //     url: "http://cafero-n8n:5678/webhook-test/gen_task_list",
-                    //     body: { text: userInout },
-                    //     headers: {
-                    //         "Content-Type": "application/json",
-                    //     },
-                    // })
-                    //     .then((result) => {
-                    //         console.log("result.status", result.status);
-                    //         console.log("result.statusText", result.statusText);
-                    //         console.log("result.headers", result.headers);
-                    //         console.log(
-                    //             "result.body",
-                    //             JSON.stringify(result.body, null, 2)
-                    //         );
-
-                    //     })
-                    //     .catch((error) => {
-                    //         console.error("error=>", error);
-                    //     });
-
-                    hmUI.deleteWidget(state.widgets.voiceButton);
-                    hmUI.deleteWidget(state.widgets.keyboardButton);
+                    this.generateTaskList(result.data);
 
                     hmUI.deleteKeyboard();
                 },
@@ -208,27 +123,92 @@ Page(
             });
         },
         generateTaskList: function (userInout) {
-            const testResponse = {
-                classifiedTasks: [
-                    {
-                        name: "提交报告",
-                        priority: "urgent_important",
-                    },
-                    {
-                        name: "回复客户邮件",
-                        priority: "urgent_not_important",
-                    },
-                    {
-                        name: "学习新技能",
-                        priority: "not_urgent_important",
-                    },
-                    {
-                        name: "整理桌面",
-                        priority: "not_urgent_not_important",
-                    },
-                ],
-            };
-            return testResponse;
+            this.httpRequest({
+                method: "post",
+                url: "https://n8n.cafero.town/webhook-test/fotd/gen_task_list",
+                body: { text: state.inputText },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((result) => {
+                    console.log("result.status", result.status);
+                    console.log("result.statusText", result.statusText);
+                    console.log("result.headers", result.headers);
+                    console.log(
+                        "[testResponse]",
+                        JSON.stringify(result.body, null, 2),
+                    );
+                    state.tasks = result.body.sortedTasks.classifiedTasks;
+
+                    for (const task of state.tasks) {
+                        task.today = true;
+                    }
+                    state.PageData = computed(() => {
+                        return {
+                            title: "Confirm Tasks",
+                            items: [
+                                ...state.tasks.map((taskObj) => {
+                                    return {
+                                        title: taskObj.name,
+                                        description:
+                                            priorityMap[taskObj.priority] ||
+                                            "未知优先级",
+                                        customStyles: {
+                                            SETTINGS_BUTTON_SUBTITLE_STYLE: {
+                                                color: priorityColorMap[
+                                                    taskObj.priority
+                                                ],
+                                            },
+                                        },
+                                    };
+                                }),
+                                {
+                                    title: "Save",
+                                    icon: "gear-fill.png",
+                                    action: () => {
+                                        AsyncStorage.ReadJson(
+                                            "config.json",
+                                            (err, config) => {
+                                                if (!err) {
+                                                    for (const taskObj of state.tasks) {
+                                                        config.tasks.push(
+                                                            taskObj,
+                                                        );
+                                                    }
+                                                    AsyncStorage.WriteJson(
+                                                        "config.json",
+                                                        config,
+                                                        (err, ok) => {
+                                                            if (ok) {
+                                                                console.log(
+                                                                    "config.json saved",
+                                                                );
+                                                                hmRouter.back();
+                                                            }
+                                                        },
+                                                    );
+                                                }
+                                            },
+                                        );
+                                    },
+                                },
+                            ],
+                        };
+                    });
+
+                    state.widgets.scrollListPage = new ScrollListPage(
+                        state.PageData.value,
+                    );
+
+                    console.log("state.tasks length:", state.tasks.length);
+
+                    hmUI.deleteWidget(state.widgets.voiceButton);
+                    hmUI.deleteWidget(state.widgets.keyboardButton);
+                })
+                .catch((error) => {
+                    console.error("error=>", error);
+                });
         },
         Layout: {
             VOICE_BUTTON_LAYOUT: {
@@ -254,5 +234,5 @@ Page(
                 press_src: "keyboardButton_press@1x.png",
             },
         },
-    })
+    }),
 );
