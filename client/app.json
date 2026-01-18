@@ -1,8 +1,8 @@
 {
   "configVersion": "v3",
   "app": {
-    "appId": 20187,
-    "appName": "FOTD",
+    "appId": 1103018,
+    "appName": "Focus On The Day",
     "appType": "app",
     "version": {
       "code": 1,
@@ -44,17 +44,13 @@
         {
           "st": "r",
           "dw": 480
-        },
-        {
-          "st": "s",
-          "dw": 390
         }
       ]
     }
   },
   "i18n": {
     "en-US": {
-      "appName": "FOTD"
+      "appName": "Focus On The Day"
     }
   },
   "defaultLanguage": "en-US"
