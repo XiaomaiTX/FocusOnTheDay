@@ -18,13 +18,14 @@ const arc = new ProgressArc();
 
 const state = reactive({
     pageData: {},
-    inputText: `完了完了，感觉要挂科了！
-            后天要考微观经济学，笔记还没整理完。
-            明天是小组展示的截止日期，PPT才做了一半。
-            学生会办的讲座今晚就要开始了，场地布置还没弄。导师催的论文开题报告这周必须交。  
-            生活上也是一团麻，宿舍脏得没法看了，该洗的衣服堆成了山。爸妈打电话一直没回，好朋友生日也快忘了。
-            还想刷一下实习招聘信息，但根本没时间。
-            快帮我看看，我该怎么安排这有限的24小时，哪些是生死线，哪些可以稍微放放？`,
+    // inputText: `完了完了，感觉要挂科了！
+    //         后天要考微观经济学，笔记还没整理完。
+    //         明天是小组展示的截止日期，PPT才做了一半。
+    //         学生会办的讲座今晚就要开始了，场地布置还没弄。导师催的论文开题报告这周必须交。  
+    //         生活上也是一团麻，宿舍脏得没法看了，该洗的衣服堆成了山。爸妈打电话一直没回，好朋友生日也快忘了。
+    //         还想刷一下实习招聘信息，但根本没时间。
+    //         快帮我看看，我该怎么安排这有限的24小时，哪些是生死线，哪些可以稍微放放？`,
+    inputText: "",
     tasks: [],
     widgets: {},
 });
@@ -97,6 +98,7 @@ Page(
                     console.log("输入内容:", result.data);
                     hmUI.deleteKeyboard();
                     this.generateTaskList(result.data);
+                    arc.start();
                 },
                 onCancel: (_, result) => {
                     console.log("取消输入");
@@ -112,6 +114,7 @@ Page(
                 onComplete: (_, result) => {
                     console.log("输入内容:", result.data);
                     this.generateTaskList(result.data);
+                    arc.start();
 
                     hmUI.deleteKeyboard();
                 },
@@ -125,8 +128,8 @@ Page(
         generateTaskList: function (userInout) {
             this.httpRequest({
                 method: "post",
-                url: "https://n8n.cafero.town/webhook-test/fotd/gen_task_list",
-                body: { text: state.inputText },
+                url: "https://n8n.cafero.town/webhook/fotd/gen_task_list",
+                body: { text: userInout },
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -196,7 +199,8 @@ Page(
                             ],
                         };
                     });
-
+                    arc.stop();
+                    arc.destroy();
                     state.widgets.scrollListPage = new ScrollListPage(
                         state.PageData.value,
                     );
