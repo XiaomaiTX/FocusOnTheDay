@@ -1,57 +1,61 @@
 {
-  "configVersion": "v3",
-  "app": {
-    "appId": 1103018,
-    "appName": "Focus On The Day",
-    "appType": "app",
-    "version": {
-      "code": 1,
-      "name": "1.0.0"
+    "configVersion": "v3",
+    "app": {
+        "appId": 1103018,
+        "appName": "Focus On The Day",
+        "appType": "app",
+        "version": {
+            "code": 1,
+            "name": "1.0.0"
+        },
+        "icon": "icon.png",
+        "vender": "zepp",
+        "description": "empty application"
     },
-    "icon": "icon.png",
-    "vender": "zepp",
-    "description": "empty application"
-  },
-  "permissions": ["device:os.mic"],
-  "runtime": {
-    "apiVersion": {
-      "compatible": "4.0",
-      "target": "4.0",
-      "minVersion": "4.0"
-    }
-  },
-  "targets": {
-    "default": {
-      "module": {
-        "page": {
-          "pages": [
-            "page/index",
-            "page/home/index",
-            "page/settings/index",
-            "page/add-tasks/index",
-            "page/edit-task/index",
-            "page/guide/index"
-          ]
-        },
-        "app-side": {
-          "path": "app-side/index"
-        },
-        "setting": {
-          "path": "setting/index"
+    "permissions": ["device:os.mic"],
+    "runtime": {
+        "apiVersion": {
+            "compatible": "4.0",
+            "target": "4.0",
+            "minVersion": "4.0"
         }
-      },
-      "platforms": [
-        {
-          "st": "r",
-          "dw": 480
+    },
+    "targets": {
+        "default": {
+            "module": {
+                "page": {
+                    "pages": [
+                        "page/index",
+                        "page/home/index",
+                        "page/settings/index",
+                        "page/add-tasks/index",
+                        "page/edit-task/index",
+                        "page/guide/index"
+                    ]
+                },
+                "app-side": {
+                    "path": "app-side/index"
+                },
+                "setting": {
+                    "path": "setting/index"
+                }
+            },
+            "platforms": [
+                {
+                    "st": "r",
+                    "dw": 480
+                },
+                {
+                    "st": "s",
+                    "dw": 480
+                }
+            ]
         }
-      ]
-    }
-  },
-  "i18n": {
-    "en-US": {
-      "appName": "Focus On The Day"
-    }
-  },
-  "defaultLanguage": "en-US"
+    },
+    "i18n": {
+        "en-US": {
+            "appName": "Focus On The Day"
+        }
+    },
+    "defaultLanguage": "en-US"
 }

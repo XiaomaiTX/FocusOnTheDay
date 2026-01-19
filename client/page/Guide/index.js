@@ -41,7 +41,9 @@ Page(
                         text_size: px(26),
                         text: [
                             //Guide text
-                            "Welcome to Zeppos!",
+                            "Focus on your tasks, not on the time.",
+                            "Set priorities and focus on the important tasks first.",
+                            "Stay organized and productive!",
                         ],
                     },
                     charInterval: 50,

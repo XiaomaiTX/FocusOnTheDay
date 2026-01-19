@@ -2,6 +2,7 @@ import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmRouter from "@zos/router";
 import * as hmDisplay from "@zos/display";
+import * as hmInteraction from "@zos/interaction";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -54,26 +55,27 @@ Page(
                     return {
                         title: "Settings",
                         items: [
-                            {
-                                title: "Daily Notifications",
-                                description: state.daily_notifications
-                                    ? "true"
-                                    : "false" || false,
-                                action: () => this.changeDailyNotifications(),
-                            },
-                            {
-                                title: "Notification Time",
-                                description: state.notification_time,
-                            },
-                            {
-                                title: "Backend URL",
-                                description: state.backend_url,
-                                action: () => this.editBackendUrl(),
-                            },
-                            {
-                                title: "User Profile Description",
-                                description: state.user_profile_description,
-                            },
+                            // {
+                            //     title: "Daily Notifications",
+                            //     description: state.daily_notifications
+                            //         ? "true"
+                            //         : "false" || false,
+                            //     action: () => this.changeDailyNotifications(),
+                            // },
+                            // {
+                            //     title: "Notification Time",
+                            //     description: state.notification_time,
+                            // },
+                            // {
+                            //     title: "Backend URL",
+                            //     description: state.backend_url,
+                            //     action: () => this.editBackendUrl(),
+                            // },
+                            // {
+                            //     title: "User Profile",
+                            //     description: state.user_profile_description,
+                            //     action: () => this.editUserProfileDescription(),
+                            // },
                             {
                                 title: "Clear Data",
                                 action() {
@@ -83,11 +85,11 @@ Page(
                                         (err, ok) => {
                                             if (!err) {
                                                 console.log(
-                                                    "config.json removed"
+                                                    "config.json removed",
                                                 );
                                                 hmRouter.exit();
                                             }
-                                        }
+                                        },
                                     );
                                 },
                             },
@@ -122,8 +124,13 @@ Page(
                 },
             });
         },
+        editUserProfileDescription() {
+            hmInteraction.showToast({
+                content: "Coming soon!",
+            });
+        },
         onDestroy() {
             AsyncStorage.SaveAndQuit();
         },
-    })
+    }),
 );
