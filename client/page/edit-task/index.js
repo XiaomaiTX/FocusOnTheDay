@@ -136,18 +136,14 @@ Page(
             });
         },
         editTaskPriority() {
-            let currentIndex = priorities.indexOf(state.taskPriority);
-            currentIndex = (currentIndex + 1) % (priorities.length + 1);
-            if (currentIndex === priorities.length) {
-                state.taskPriority = "无";
-                state.taskPriorityName = "无";
-                state.taskPriorityColor = 0xffffff;
-            } else {
-                const priorityKey = priorities[currentIndex];
-                state.taskPriority = priorityKey;
-                state.taskPriorityName = priorityMap[priorityKey];
-                state.taskPriorityColor = priorityColorMap[priorityKey];
-            }
+            const priorityKeys = Object.keys(priorityMap);
+            const priorityNames = priorityKeys.map(k => priorityMap[k]);
+            const currentIndex = priorityNames.indexOf(state.taskPriorityName);
+            const nextIndex = (currentIndex + 1) % priorityNames.length;
+            const nextKey = priorityKeys[nextIndex];
+            state.taskPriorityName = priorityMap[nextKey];
+            state.taskPriority = nextKey;
+            state.taskPriorityColor = priorityColorMap[nextKey];
         },
         SaveAndQuit() {
             AsyncStorage.ReadJson("config.json", (err, config) => {
