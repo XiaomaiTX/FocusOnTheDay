@@ -2,6 +2,7 @@ import { getText } from "@zos/i18n";
 import * as hmUI from "@zos/ui";
 import * as hmRouter from "@zos/router";
 import * as hmDisplay from "@zos/display";
+import * as hmInteraction from "@zos/interaction";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
@@ -22,6 +23,15 @@ Page(
             });
             hmDisplay.setPageBrightTime({
                 brightTime: 2147483000,
+            });
+            hmInteraction.onGesture({
+                callback: (event) => {
+                    if (event === hmInteraction.GESTURE_UP) {
+                        console.log("up");
+                        hmRouter.home();
+                    }
+                    return true;
+                },
             });
         },
         build() {
@@ -47,7 +57,7 @@ Page(
                             },
                             customStyles: {
                                 SETTINGS_BUTTON_STYLE: {
-                                    color: 0xE5E5E5,
+                                    color: 0xe5e5e5,
                                 },
                                 SETTINGS_BUTTON_TITLE_STYLE: {
                                     color: 0x000000,
@@ -103,5 +113,5 @@ Page(
         onDestroy() {
             AsyncStorage.SaveAndQuit();
         },
-    })
+    }),
 );

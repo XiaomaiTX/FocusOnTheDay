@@ -3,11 +3,11 @@ import * as hmUI from "@zos/ui";
 import { px } from "@zos/utils";
 import * as hmRouter from "@zos/router";
 import { Time } from "@zos/sensor";
-import hmDisplay from "@zos/display";
+import * as hmDisplay from "@zos/display";
+import * as hmInteraction from "@zos/interaction";
 
 import { BasePage } from "@zeppos/zml/base-page";
 import { AsyncStorage } from "@silver-zepp/easy-storage";
-
 
 import { ProgressArc } from "../components/ui/progress-arc";
 import { TextTyper } from "../components/ui/text-typer";
@@ -76,7 +76,7 @@ class WelcomeMessageGenerator {
     showWelcome() {
         const welcome = this.getRandomWelcome();
         console.log(
-            `[${welcome.periodName} ${welcome.hour}:00] ${welcome.message}`
+            `[${welcome.periodName} ${welcome.hour}:00] ${welcome.message}`,
         );
         return welcome.message;
     }
@@ -104,15 +104,24 @@ Page(
             hmDisplay.setPageBrightTime({
                 brightTime: 2147483000,
             });
+            hmInteraction.onGesture({
+                callback: (event) => {
+                    if (event === hmInteraction.GESTURE_UP) {
+                        console.log("up");
+                        hmRouter.home();
+                    }
+                    return true;
+                },
+            });
             this.arc = new ProgressArc();
             this.arc.start();
         },
         build() {
-           AsyncStorage.ReadJson("config.json", (err, config) => {
+            AsyncStorage.ReadJson("config.json", (err, config) => {
                 if (!err) {
                     console.log("config.json found");
                     const unfinishedTasks = config.tasks.filter(
-                        (task) => !task.today
+                        (task) => !task.today,
                     );
                     setTimeout(() => {
                         this.arc.stop();
@@ -124,7 +133,7 @@ Page(
                         if (
                             isFirstOpenTodaySimple(
                                 time.getTime(),
-                                config.last_open_time
+                                config.last_open_time,
                             )
                             // true
                         ) {
@@ -161,7 +170,7 @@ Page(
                                             url: "page/home/index",
                                         });
                                     });
-                                }
+                                },
                             );
                         } else {
                             this.textWidget = new TextTyper({
@@ -200,5 +209,5 @@ Page(
             this.arc.stop();
             this.arc.destroy();
         },
-    })
+    }),
 );

@@ -42,7 +42,8 @@ Page(
                         text: [
                             //Guide text
                             "Focus on your tasks, not on the time.",
-                            "Set priorities and focus on the important tasks first.",
+                            "Set priorities",
+                            "And focus on the important tasks first.",
                             "Stay organized and productive!",
                         ],
                     },
