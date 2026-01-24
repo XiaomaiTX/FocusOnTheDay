@@ -51,99 +51,99 @@ Page(
                 arc.stop();
                 arc.destroy();
 
-                state.pageData = computed(() => {
-                    return {
-                        title: "Settings",
-                        items: [
-                            {
-                                title: "Daily Notifications",
-                                description: state.daily_notifications
-                                    ? "true"
-                                    : "false" || false,
-                                action: () => this.changeDailyNotifications(),
-                            },
-                            {
-                                title: "Notification Time",
-                                description: state.notification_time,
-                                action: () => this.editNotificationTime(),
-                            },
-                            {
-                                title: "Backend URL",
-                                description: state.backend_url,
-                                action: () => this.editBackendUrl(),
-                            },
-                            {
-                                title: "User Profile",
-                                description: state.user_profile_description,
-                                action: () => this.editUserProfileDescription(),
-                            },
-                            {
-                                title: "Clear Data",
-                                action() {
-                                    console.log("Clicked Clear Data");
-                                    AsyncStorage.RemoveFile(
-                                        "config.json",
-                                        (err, ok) => {
-                                            if (!err) {
-                                                console.log(
-                                                    "config.json removed",
-                                                );
-                                                hmRouter.exit();
-                                            }
-                                        },
-                                    );
-                                },
-                            },
-                        ],
-                    };
-                });
+				state.pageData = computed(() => {
+					return {
+						title: getText("page_title_settings"),
+						items: [
+							{
+								title: getText("settings_daily_notifications"),
+								description: state.daily_notifications
+									? getText("text_true")
+									: getText("text_false") || false,
+								action: () => this.changeDailyNotifications(),
+							},
+							{
+								title: getText("settings_notification_time"),
+								description: state.notification_time,
+								action: () => this.editNotificationTime(),
+							},
+							{
+								title: getText("settings_backend_url"),
+								description: state.backend_url,
+								action: () => this.editBackendUrl(),
+							},
+							{
+								title: getText("settings_user_profile"),
+								description: state.user_profile_description,
+								action: () => this.editUserProfileDescription(),
+							},
+							{
+								title: getText("settings_clear_data"),
+								action() {
+									console.log("Clicked Clear Data");
+									AsyncStorage.RemoveFile(
+										"config.json",
+										(err, ok) => {
+											if (!err) {
+												console.log(
+													"config.json removed",
+												);
+												hmRouter.exit();
+											}
+										},
+									);
+								},
+							},
+						],
+					};
+				});
 
-                const page = new ScrollListPage(state.pageData.value);
-                effect(() => {
-                    state.daily_notifications;
-                    state.notification_time;
-                    state.backend_url;
-                    state.user_profile_description;
-                    page.updateUI(state.pageData.value);
-                });
-            }, 700);
-        },
-        changeDailyNotifications() {
-            hmInteraction.showToast({
-                content: "Coming soon!",
-            });
-            // console.log("Toggling daily_notifications");
-            // state.daily_notifications = !state.daily_notifications;
-            // console.log("New value:", state.daily_notifications);
-        },
-        editNotificationTime() {
-            hmInteraction.showToast({
-                content: "Coming soon!",
-            });
-        },  
-        editBackendUrl() {
-            hmInteraction.showToast({
-                content: "Coming soon!",
-            });
+				const page = new ScrollListPage(state.pageData.value);
+				effect(() => {
+					state.daily_notifications;
+					state.notification_time;
+					state.backend_url;
+					state.user_profile_description;
+					page.updateUI(state.pageData.value);
+				});
+			}, 700);
+		},
+		changeDailyNotifications() {
+			hmInteraction.showToast({
+				content: getText("feature_coming_soon"),
+			});
+			// console.log("Toggling daily_notifications");
+			// state.daily_notifications = !state.daily_notifications;
+			// console.log("New value:", state.daily_notifications);
+		},
+		editNotificationTime() {
+			hmInteraction.showToast({
+				content: getText("feature_coming_soon"),
+			});
+		},
+		editBackendUrl() {
+			hmInteraction.showToast({
+				content: getText("feature_coming_soon"),
+			});
 
-            // hmUI.keyboard.clearInput();
-            // // hmUI.keyboard.inputText(state.taskName);
-            // hmUI.createKeyboard({
-            //     inputType: hmUI.inputType.CHAR,
-            //     onComplete: (_, result) => {
-            //         console.log("完成输入:", result.data);
-            //         state.backend_url = result.data || "无";
-            //         hmUI.deleteKeyboard();
-            //     },
-            // });
-        },
-        editUserProfileDescription() {
-            hmInteraction.showToast({
-                content: "Coming soon!",
-            });
-        },
-        onDestroy() {
-            AsyncStorage.SaveAndQuit();
-        },
-    }),
+			// hmUI.keyboard.clearInput();
+			// // hmUI.keyboard.inputText(state.taskName);
+			// hmUI.createKeyboard({
+			//     inputType: hmUI.inputType.CHAR,
+			//     onComplete: (_, result) => {
+			//         console.log("完成输入:", result.data);
+			//         state.backend_url = result.data || "无";
+			//         hmUI.deleteKeyboard();
+			//     },
+			// });
+		},
+		editUserProfileDescription() {
+			hmInteraction.showToast({
+				content: getText("feature_coming_soon"),
+			});
+		},
+		onDestroy() {
+			AsyncStorage.SaveAndQuit();
+		},
+	}),
 );

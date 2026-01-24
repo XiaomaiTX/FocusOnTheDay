@@ -1,215 +1,215 @@
 msgid "example"
-msgstr "This is an example in device"
+msgstr "这是设备中的一个示例"
 
 # === 页面标题 ===
 msgid "page_title_tasks"
-msgstr "Tasks"
+msgstr "任务"
 
 msgid "page_title_settings"
-msgstr "Settings"
+msgstr "设置"
 
 msgid "page_title_confirm_tasks"
-msgstr "Confirm Tasks"
+msgstr "确认任务"
 
 msgid "page_title_guide"
-msgstr "Guide"
+msgstr "引导"
 
 # === 按钮和操作 ===
 msgid "button_add_task"
-msgstr "Add Task"
+msgstr "添加任务"
 
 msgid "button_edit_task"
-msgstr "Edit Task"
+msgstr "编辑任务"
 
 msgid "button_save"
-msgstr "Save"
+msgstr "保存"
 
 msgid "button_cancel"
-msgstr "Cancel"
+msgstr "取消"
 
 msgid "button_new_task"
-msgstr "New Task"
+msgstr "新建任务"
 
 msgid "button_complete_task"
-msgstr "Complete Task"
+msgstr "完成任务"
 
 msgid "button_task_name"
-msgstr "Task Name"
+msgstr "任务名称"
 
 msgid "button_task_priority"
-msgstr "Task Priority"
+msgstr "任务优先级"
 
 msgid "button_save_and_exit"
-msgstr "Save and Exit"
+msgstr "保存并退出"
 
 msgid "button_settings"
-msgstr "Settings"
+msgstr "设置"
 
 # === 引导页文本 ===
 msgid "guide_text_1"
-msgstr "Focus on your tasks, not on the time."
+msgstr "专注于你的任务，而不是时间。"
 
 msgid "guide_text_2"
-msgstr "Set priorities"
+msgstr "设置优先级"
 
 msgid "guide_text_3"
-msgstr "And focus on the important tasks first."
+msgstr "并优先处理重要任务。"
 
 msgid "guide_text_4"
-msgstr "Stay organized and productive!"
+msgstr "保持条理性和高效性！"
 
 # === 任务优先级 ===
 msgid "task_priority_high"
-msgstr "High Priority"
+msgstr "高优先级"
 
 msgid "task_priority_medium"
-msgstr "Medium Priority"
+msgstr "中优先级"
 
 msgid "task_priority_low"
-msgstr "Low Priority"
+msgstr "低优先级"
 
 msgid "task_priority_none"
-msgstr "None"
+msgstr "无"
 
 msgid "task_priority_unknown"
-msgstr "Unknown Priority"
+msgstr "未知优先级"
 
 # === 状态信息 ===
 msgid "task_expired"
-msgstr " | Expired"
+msgstr " | 已过期"
 
 msgid "all_tasks_completed"
-msgstr "Great! All tasks completed yesterday!"
+msgstr "太好了！昨天的所有任务都已完成！"
 
 msgid "tasks_pending_yesterday"
-msgstr "There are still %d tasks pending from yesterday~"
+msgstr "昨天还有%d个任务待完成~"
 
 msgid "tasks_pending_today"
-msgstr "There are still %d tasks pending today~"
+msgstr "今天还有%d个任务待完成~"
 
 msgid "how_are_you_today"
-msgstr "How are you today?"
+msgstr "今天感觉怎么样？"
 
 # === 问候语 ===
 msgid "greeting_early_morning_1"
-msgstr "Good early morning! Quiet night, clearest thoughts~"
+msgstr "早安！安静的夜晚，思绪最清晰~"
 
 msgid "greeting_early_morning_2"
-msgstr "Good early morning! Stars and moon are with you~"
+msgstr "早安！星星和月亮陪伴着你~"
 
 msgid "greeting_early_morning_3"
-msgstr "Good early morning! A new day is about to begin!"
+msgstr "早安！新的一天即将开始！"
 
 msgid "greeting_morning_1"
-msgstr "Good morning! A energetic day begins!"
+msgstr "早上好！充满活力的一天开始了！"
 
 msgid "greeting_morning_2"
-msgstr "Good morning! Keep going today!"
+msgstr "早上好！今天继续加油！"
 
 msgid "greeting_morning_3"
-msgstr "Good morning! Wish you a wonderful day!"
+msgstr "早上好！祝你有一个美好的一天！"
 
 msgid "greeting_noon_1"
-msgstr "Good noon! Remember to have lunch on time!"
+msgstr "中午好！记得按时吃午饭！"
 
 msgid "greeting_noon_2"
-msgstr "Good noon! Time for a break~"
+msgstr "中午好！是时候休息一下~"
 
 msgid "greeting_afternoon_1"
-msgstr "Good afternoon! Time for afternoon tea!"
+msgstr "下午好！喝下午茶的时间到了！"
 
 msgid "greeting_afternoon_2"
-msgstr "Good afternoon! Keep up the good state!"
+msgstr "下午好！保持良好状态！"
 
 msgid "greeting_evening_1"
-msgstr "Good evening! Have you had dinner?"
+msgstr "晚上好！吃晚饭了吗？"
 
 msgid "greeting_evening_2"
-msgstr "Good evening! How was your day?"
+msgstr "晚上好！今天过得怎么样？"
 
 msgid "greeting_night_1"
-msgstr "Good night! Rest early~"
+msgstr "晚安！早点休息~"
 
 msgid "greeting_night_2"
-msgstr "Late night, time to sleep!"
+msgstr "深夜了，该睡觉了！"
 
 msgid "greeting_night_3"
-msgstr "Good night! Sweet dreams~"
+msgstr "晚安！做个好梦~"
 
 msgid "greeting_default"
-msgstr "Hello! Welcome!"
+msgstr "你好！欢迎！"
 
 # === 时间段名称 ===
 msgid "period_early_morning"
-msgstr "Early Morning"
+msgstr "凌晨"
 
 msgid "period_morning"
-msgstr "Morning"
+msgstr "早晨"
 
 msgid "period_noon"
-msgstr "Noon"
+msgstr "中午"
 
 msgid "period_afternoon"
-msgstr "Afternoon"
+msgstr "下午"
 
 msgid "period_evening"
-msgstr "Evening"
+msgstr "晚上"
 
 msgid "period_night"
-msgstr "Night"
+msgstr "夜晚"
 
 # === 错误和提示 ===
 msgid "voice_input_not_supported"
-msgstr "Voice input not supported on current device"
+msgstr "当前设备不支持语音输入"
 
 msgid "input_complete"
-msgstr "Input complete"
+msgstr "输入完成"
 
 msgid "input_canceled"
-msgstr "Input canceled"
+msgstr "输入已取消"
 
 # === 引导页标题 ===
 msgid "guide_start_your_day"
-msgstr "Start Your Day!"
+msgstr "开始你的一天！"
 
 # === 通用文本 ===
 msgid "text_none"
-msgstr "None"
+msgstr "无"
 
 # === 设置页面 ===
 msgid "settings_daily_notifications"
-msgstr "Daily Notifications"
+msgstr "每日通知"
 
 msgid "settings_notification_time"
-msgstr "Notification Time"
+msgstr "通知时间"
 
 msgid "settings_backend_url"
-msgstr "Backend URL"
+msgstr "后端URL"
 
 msgid "settings_user_profile"
-msgstr "User Profile"
+msgstr "用户资料"
 
 msgid "settings_clear_data"
-msgstr "Clear Data"
+msgstr "清除数据"
 
 msgid "text_true"
-msgstr "true"
+msgstr "是"
 
 msgid "text_false"
-msgstr "false"
+msgstr "否"
 
 msgid "feature_coming_soon"
-msgstr "Coming soon!"
+msgstr "即将推出！"
 
 # === 任务优先级 ===
 msgid "task_priority_urgent_important"
-msgstr "Urgent & Important"
+msgstr "紧急且重要"
 
 msgid "task_priority_not_urgent_important"
-msgstr "Not Urgent but Important"
+msgstr "不紧急但重要"
 
 msgid "task_priority_urgent_not_important"
-msgstr "Urgent but Not Important"
+msgstr "紧急但不重要"
 
 msgid "task_priority_not_urgent_not_important"
-msgstr "Not Urgent & Not Important"
+msgstr "不紧急且不重要"
