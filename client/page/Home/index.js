@@ -26,9 +26,9 @@ Page(
             });
             hmInteraction.onGesture({
                 callback: (event) => {
-                    if (event === hmInteraction.GESTURE_UP) {
-                        console.log("up");
-                        hmRouter.home();
+                    if (event === hmInteraction.GESTURE_RIGHT) {
+                        console.log("right");
+                        hmRouter.exit();
                     }
                     return true;
                 },
