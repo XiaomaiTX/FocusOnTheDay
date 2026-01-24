@@ -55,27 +55,28 @@ Page(
                     return {
                         title: "Settings",
                         items: [
-                            // {
-                            //     title: "Daily Notifications",
-                            //     description: state.daily_notifications
-                            //         ? "true"
-                            //         : "false" || false,
-                            //     action: () => this.changeDailyNotifications(),
-                            // },
-                            // {
-                            //     title: "Notification Time",
-                            //     description: state.notification_time,
-                            // },
-                            // {
-                            //     title: "Backend URL",
-                            //     description: state.backend_url,
-                            //     action: () => this.editBackendUrl(),
-                            // },
-                            // {
-                            //     title: "User Profile",
-                            //     description: state.user_profile_description,
-                            //     action: () => this.editUserProfileDescription(),
-                            // },
+                            {
+                                title: "Daily Notifications",
+                                description: state.daily_notifications
+                                    ? "true"
+                                    : "false" || false,
+                                action: () => this.changeDailyNotifications(),
+                            },
+                            {
+                                title: "Notification Time",
+                                description: state.notification_time,
+                                action: () => this.editNotificationTime(),
+                            },
+                            {
+                                title: "Backend URL",
+                                description: state.backend_url,
+                                action: () => this.editBackendUrl(),
+                            },
+                            {
+                                title: "User Profile",
+                                description: state.user_profile_description,
+                                action: () => this.editUserProfileDescription(),
+                            },
                             {
                                 title: "Clear Data",
                                 action() {
@@ -108,21 +109,33 @@ Page(
             }, 700);
         },
         changeDailyNotifications() {
-            console.log("Toggling daily_notifications");
-            state.daily_notifications = !state.daily_notifications;
-            console.log("New value:", state.daily_notifications);
-        },
-        editBackendUrl() {
-            hmUI.keyboard.clearInput();
-            // hmUI.keyboard.inputText(state.taskName);
-            hmUI.createKeyboard({
-                inputType: hmUI.inputType.CHAR,
-                onComplete: (_, result) => {
-                    console.log("完成输入:", result.data);
-                    state.backend_url = result.data || "无";
-                    hmUI.deleteKeyboard();
-                },
+            hmInteraction.showToast({
+                content: "Coming soon!",
             });
+            // console.log("Toggling daily_notifications");
+            // state.daily_notifications = !state.daily_notifications;
+            // console.log("New value:", state.daily_notifications);
+        },
+        editNotificationTime() {
+            hmInteraction.showToast({
+                content: "Coming soon!",
+            });
+        },  
+        editBackendUrl() {
+            hmInteraction.showToast({
+                content: "Coming soon!",
+            });
+
+            // hmUI.keyboard.clearInput();
+            // // hmUI.keyboard.inputText(state.taskName);
+            // hmUI.createKeyboard({
+            //     inputType: hmUI.inputType.CHAR,
+            //     onComplete: (_, result) => {
+            //         console.log("完成输入:", result.data);
+            //         state.backend_url = result.data || "无";
+            //         hmUI.deleteKeyboard();
+            //     },
+            // });
         },
         editUserProfileDescription() {
             hmInteraction.showToast({
