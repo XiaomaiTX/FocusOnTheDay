@@ -213,3 +213,19 @@ msgstr "Urgent but Not Important"
 
 msgid "task_priority_not_urgent_not_important"
 msgstr "Not Urgent & Not Important"
+
+# === 默认任务 ===
+msgid "default_task_budget_report"
+msgstr "Complete Budget Report"
+
+msgid "default_task_regular_meeting"
+msgstr "Attend Regular Meeting"
+
+msgid "default_task_workout"
+msgstr "Workout"
+
+msgid "default_task_reply_client_emails"
+msgstr "Reply to Client Emails"
+
+msgid "default_task_organize_desktop"
+msgstr "Organize Desktop"

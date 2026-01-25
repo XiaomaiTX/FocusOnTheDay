@@ -73,29 +73,39 @@ Page(
 									version: "1.0",
 									tasks: [
 										{
-											name: "完成预算报告",
+											name: getText(
+												"default_task_budget_report",
+											),
 											today: true,
 											priority: "urgent_important",
 											notificationTime:
 												"2024-06-01T10:00:00",
 										},
 										{
-											name: "参加例会",
+											name: getText(
+												"default_task_regular_meeting",
+											),
 											today: true,
 											priority: "urgent_not_important",
 										},
 										{
-											name: "健身",
+											name: getText(
+												"default_task_workout",
+											),
 											today: true,
 											priority: "not_urgent_important",
 										},
 										{
-											name: "回复客户邮件",
+											name: getText(
+												"default_task_reply_client_emails",
+											),
 											today: false,
 											priority: "urgent_not_important",
 										},
 										{
-											name: "整理桌面",
+											name: getText(
+												"default_task_organize_desktop",
+											),
 											today: false,
 											priority:
 												"not_urgent_not_important",
